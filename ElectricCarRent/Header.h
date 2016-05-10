@@ -86,7 +86,7 @@
 //#define  ServerURL @"http://123.57.227.139:9888/"
 //#define  ServerURL @"http://123.57.227.139:9888/"
 //#define  ServerURL @"http://123.57.227.139:9888/"
-//#define  ServerURL @"http://123.57.227.139:9888/"
+#define  ServerURL @"http://123.57.227.139:9888/"
 
 
 
@@ -94,7 +94,7 @@
 
 
 
-#define  ServerURL @"http://192.168.0.50:8080/"
+//#define  ServerURL @"http://192.168.0.50:8080/"
 
 //登录检测
 #define CheckLogin(VC)          if (![ECarConfigs shareInstance].loginStatue) { \

@@ -81,7 +81,7 @@
 {
     [self showHUD:@"请稍等..."];
     weak_Self(self);
-    ECarZhiFuViewController * zhifuVC = [[ECarZhiFuViewController alloc]init];
+    ECarZhiFuViewController * zhifuVC = [[ECarZhiFuViewController alloc] init];
     [[self.useManager creatOrderByRenyuanID:[ECarConfigs shareInstance].user.phone vipType:self.modle.levelCode lastNum:@"10"] subscribeNext:^(id x) {
         [weakSelf hideHUD];
         NSDictionary * dic = x;
@@ -102,7 +102,6 @@
         zhifuVC.orderID = dictx[@"orderId"];
         zhifuVC.canBack = YES;
         zhifuVC.sendType = sendToHouTaiByVip;
-        PDLog(@"sendType  %@, %@, %@", dic, config.currentPrice, weakSelf.modle.levelMoney);
         [self.navigationController pushViewController:zhifuVC animated:YES];
     } error:^(NSError *error) {
         [weakSelf delayHidHUD:MESSAGE_NoNetwork];

@@ -419,7 +419,6 @@
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableArray *carAry = [[NSMutableArray alloc] init];
         NSMutableDictionary *dic = parse.responseJsonOB;
-        PDLog(@"doVerifyurl  :   %@", dic);
         NSArray *objAry = dic[@"obj"];
         for (NSDictionary *objDic in objAry) {
             ECarCarInfo *carInfo = [[ECarCarInfo alloc] initWithResponse:objDic];

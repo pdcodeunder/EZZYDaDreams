@@ -77,7 +77,7 @@
     if (self.canBack) {
         [self creatNavBar];
         [self setViewUI];
-    }else{
+    } else {
         self.navigationController.navigationBarHidden = YES;
         [self setViewUI];
         UILabel * titLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, kScreenW, 44)];
@@ -123,6 +123,7 @@
     UIBarButtonItem *leftBarItem = [[UIBarButtonItem alloc] initWithCustomView:button];
     self.navigationItem.leftBarButtonItem = leftBarItem;
 }
+
 - (void)goBack
 {
     [self.navigationController popViewControllerAnimated:YES];
@@ -582,6 +583,11 @@
             } else {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"支付结果" message:@"支付失败" delegate:nil cancelButtonTitle:@"确认" otherButtonTitles:nil, nil];
                 [alert show];
+            }
+            if ([ECarConfigs shareInstance].zhifuwancheng == 10) {
+                if (self.navigationController.viewControllers.count > 1) {
+                    [self.navigationController popToViewController:self.navigationController.viewControllers[1] animated:YES];
+                }
             }
         }];
     }

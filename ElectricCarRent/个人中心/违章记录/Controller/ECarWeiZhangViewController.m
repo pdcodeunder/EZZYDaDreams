@@ -198,8 +198,7 @@
     }];
     self.weizhangChuLiType = WeiZhangChuLiTypeDaiChuLi;
     self.severURL = @"car/tcpeccancyController.do?getpendingPeccancy";
-    self.page = 1;
-    [self getDataSourceFormNetwork];
+    [self.tableView headerBeginRefreshing];
 }
 
 - (void)chulizhongClicked:(UIButton *)sender

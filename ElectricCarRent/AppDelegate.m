@@ -240,19 +240,15 @@
                     return;
                 }
                 if (config.zhifuwancheng == 10) {
-                    strTitle = @"支付成功";
-                    strMsg = @"恭喜您成为EZZY会员";
-                } else {
-                    strTitle = @"支付成功";
-                    strMsg = @"为了方便下一位用户顺利使用车辆，请您下车后关闭车门，感谢您的配合";
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"buyMemberZhiFuFinished" object:nil userInfo:nil];
+                    return;
                 }
-                if ([ECarConfigs shareInstance].cheliangchaochu == 20) {
-                    [ECarConfigs shareInstance].cheliangchaochu = 0;
-                    strTitle = @"支付成功";
-                    strMsg = @"为了方便下一位用户顺利使用车辆，请您下车后关闭车门，感谢您的配合";
-                }
+                strTitle = @"支付成功";
+                strMsg = @"为了方便下一位用户顺利使用车辆，请您下车后关闭车门，感谢您的配合";
+                [ECarConfigs shareInstance].cheliangchaochu = 0;
                 [ECarConfigs shareInstance].zhifuwancheng = 0;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"zhifuwancheng" object:nil userInfo:nil];
+                
 //                [[self.mapManager finishOrderWithID:config.orignOrderNo] subscribeError:^(NSError *error) {
 //                    
 //                } completed:^{

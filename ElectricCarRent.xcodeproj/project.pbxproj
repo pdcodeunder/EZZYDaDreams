@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E70E70D91C898CF800391A5B /* ECarAboutUsController.m in Sources */ = {isa = PBXBuildFile; fileRef = E70E70D81C898CF800391A5B /* ECarAboutUsController.m */; };
+		E71703BF1CE1893400DFD5FF /* EZZYMemberZhiFuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E71703BE1CE1893400DFD5FF /* EZZYMemberZhiFuViewController.m */; };
 		E71A7E9A1CBB831F004B47C3 /* ECarVIPNumberViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E71A7E911CBB831F004B47C3 /* ECarVIPNumberViewController.m */; };
 		E71A7E9B1CBB831F004B47C3 /* EZZYMemberViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E71A7E931CBB831F004B47C3 /* EZZYMemberViewController.m */; };
 		E71A7E9C1CBB831F004B47C3 /* EZZYMemberModle.m in Sources */ = {isa = PBXBuildFile; fileRef = E71A7E961CBB831F004B47C3 /* EZZYMemberModle.m */; };
@@ -233,6 +234,8 @@
 /* Begin PBXFileReference section */
 		E70E70D71C898CF800391A5B /* ECarAboutUsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECarAboutUsController.h; sourceTree = "<group>"; };
 		E70E70D81C898CF800391A5B /* ECarAboutUsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECarAboutUsController.m; sourceTree = "<group>"; };
+		E71703BD1CE1893400DFD5FF /* EZZYMemberZhiFuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZZYMemberZhiFuViewController.h; sourceTree = "<group>"; };
+		E71703BE1CE1893400DFD5FF /* EZZYMemberZhiFuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZZYMemberZhiFuViewController.m; sourceTree = "<group>"; };
 		E71A7E901CBB831F004B47C3 /* ECarVIPNumberViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECarVIPNumberViewController.h; sourceTree = "<group>"; };
 		E71A7E911CBB831F004B47C3 /* ECarVIPNumberViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECarVIPNumberViewController.m; sourceTree = "<group>"; };
 		E71A7E921CBB831F004B47C3 /* EZZYMemberViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZZYMemberViewController.h; sourceTree = "<group>"; };
@@ -1087,6 +1090,8 @@
 				E77680841C464263007F610A /* ECarZhiFuViewController.m */,
 				E7BC70D31CBDE9BB00CD9472 /* ECarWeiZhangZhiFuViewController.h */,
 				E7BC70D41CBDE9BB00CD9472 /* ECarWeiZhangZhiFuViewController.m */,
+				E71703BD1CE1893400DFD5FF /* EZZYMemberZhiFuViewController.h */,
+				E71703BE1CE1893400DFD5FF /* EZZYMemberZhiFuViewController.m */,
 			);
 			path = "支付";
 			sourceTree = "<group>";
@@ -2028,6 +2033,7 @@
 				E72417AB1C3A1A1D001B3F28 /* ECarMapManager.m in Sources */,
 				E7DA3DC11C32A37400464521 /* NOValidateHelper.m in Sources */,
 				E71A7E9F1CBB8375004B47C3 /* EZZYMemberTableViewCell.m in Sources */,
+				E71703BF1CE1893400DFD5FF /* EZZYMemberZhiFuViewController.m in Sources */,
 				E7DA3E191C32A47400464521 /* DSASubject.m in Sources */,
 				E7DA3DB61C32A01D00464521 /* openssl_wrapper.m in Sources */,
 				E7D6F5861CC1157000885232 /* ECarPlayViewController.m in Sources */,
