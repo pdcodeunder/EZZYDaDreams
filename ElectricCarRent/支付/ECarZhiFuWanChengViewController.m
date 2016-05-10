@@ -18,7 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 100, 40)];
+    UILabel * titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
     titleLabel.text = @"支付完成";
     titleLabel.textColor = [UIColor blackColor];
     titleLabel.font = [UIFont boldSystemFontOfSize:17.f];

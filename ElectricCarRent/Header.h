@@ -84,6 +84,9 @@
 
 
 //#define  ServerURL @"http://123.57.227.139:9888/"
+//#define  ServerURL @"http://123.57.227.139:9888/"
+//#define  ServerURL @"http://123.57.227.139:9888/"
+//#define  ServerURL @"http://123.57.227.139:9888/"
 
 
 
