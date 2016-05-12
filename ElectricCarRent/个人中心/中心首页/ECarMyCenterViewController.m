@@ -148,7 +148,7 @@
         if (buttonIndex == 0) {
             weak_Self(self);
             ECarUser *user = [ECarConfigs shareInstance].user;
-            [[self.loginManager loginOut:user.phone]subscribeNext:^(id x) {
+            [[self.loginManager loginOut:user.phone] subscribeNext:^(id x) {
                 [ECarConfigs shareInstance].user = nil;
                 [ECarConfigs shareInstance].loginStatue = NO;
                 

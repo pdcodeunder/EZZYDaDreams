@@ -39,6 +39,7 @@
 		E7579D4B1CC7795B009736F2 /* BabyToy.m in Sources */ = {isa = PBXBuildFile; fileRef = E7579D3F1CC7795B009736F2 /* BabyToy.m */; };
 		E7579D4C1CC7795B009736F2 /* PDLanYaLianJie.m in Sources */ = {isa = PBXBuildFile; fileRef = E7579D411CC7795B009736F2 /* PDLanYaLianJie.m */; };
 		E7579D4D1CC7795B009736F2 /* PeripheralInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E7579D431CC7795B009736F2 /* PeripheralInfo.m */; };
+		E762037A1CE33C7B00513349 /* EZZYDrivingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E76203791CE33C7B00513349 /* EZZYDrivingViewController.m */; };
 		E76686591CAA9A6400245A48 /* ECarAboutEZZYController.m in Sources */ = {isa = PBXBuildFile; fileRef = E76686581CAA9A6400245A48 /* ECarAboutEZZYController.m */; };
 		E766865C1CAB659900245A48 /* ECarFaPiaoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E766865B1CAB659900245A48 /* ECarFaPiaoViewController.m */; };
 		E766865F1CAB694200245A48 /* ECarFaPiaoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E766865E1CAB694200245A48 /* ECarFaPiaoTableViewCell.m */; };
@@ -293,6 +294,9 @@
 		E7579D411CC7795B009736F2 /* PDLanYaLianJie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDLanYaLianJie.m; sourceTree = "<group>"; };
 		E7579D421CC7795B009736F2 /* PeripheralInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralInfo.h; sourceTree = "<group>"; };
 		E7579D431CC7795B009736F2 /* PeripheralInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeripheralInfo.m; sourceTree = "<group>"; };
+		E76203781CE33C7B00513349 /* EZZYDrivingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZZYDrivingViewController.h; sourceTree = "<group>"; };
+		E76203791CE33C7B00513349 /* EZZYDrivingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZZYDrivingViewController.m; sourceTree = "<group>"; };
+		E762037B1CE4286F00513349 /* EZZYNetworkingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZZYNetworkingService.h; sourceTree = "<group>"; };
 		E76686571CAA9A6400245A48 /* ECarAboutEZZYController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECarAboutEZZYController.h; sourceTree = "<group>"; };
 		E76686581CAA9A6400245A48 /* ECarAboutEZZYController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECarAboutEZZYController.m; sourceTree = "<group>"; };
 		E766865A1CAB659900245A48 /* ECarFaPiaoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECarFaPiaoViewController.h; sourceTree = "<group>"; };
@@ -1116,6 +1120,7 @@
 				E7670FDE1C3A435E009D0676 /* ECarUserManager.m */,
 				E72417A61C3A1A1D001B3F28 /* ECarMapManager.h */,
 				E72417A71C3A1A1D001B3F28 /* ECarMapManager.m */,
+				E762037B1CE4286F00513349 /* EZZYNetworkingService.h */,
 			);
 			path = "网络Model";
 			sourceTree = "<group>";
@@ -1140,6 +1145,8 @@
 				E76710261C3A7E53009D0676 /* ECarMapNaviViewController.m */,
 				E767102B1C3A7E73009D0676 /* ECarDrivingViewController.h */,
 				E767102C1C3A7E73009D0676 /* ECarDrivingViewController.m */,
+				E76203781CE33C7B00513349 /* EZZYDrivingViewController.h */,
+				E76203791CE33C7B00513349 /* EZZYDrivingViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -2143,6 +2150,7 @@
 				E7DA3DDC1C32A46400464521 /* AFHTTPRequestOperationManager.m in Sources */,
 				E73F16DC1CA1948A00AF1A5B /* ECarMyCenterNormalTableViewCell.m in Sources */,
 				E7DA3DDF1C32A46400464521 /* AFSecurityPolicy.m in Sources */,
+				E762037A1CE33C7B00513349 /* EZZYDrivingViewController.m in Sources */,
 				E76710191C3A5861009D0676 /* ECarFanWeiModel.m in Sources */,
 				E76710161C3A545C009D0676 /* CustomAnnotationView.m in Sources */,
 				E70E70D91C898CF800391A5B /* ECarAboutUsController.m in Sources */,

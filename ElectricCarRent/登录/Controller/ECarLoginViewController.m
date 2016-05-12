@@ -143,10 +143,12 @@
         [self delayHidHUD:@"请输入手机号"];
         return;
     }
+    NSString *identifierForDevice = [NSString stringWithFormat:@"%@", [UIDevice currentDevice].identifierForVendor.UUIDString];
+    PDLog(@"identifierForDevice:;  %@", identifierForDevice);
     // 访问后台接口，传递参数，解析后台返回的JESON
     [self showHUD:@"登录中..."];
     weak_Self(self);
-    [[self.manager apploginWithPhone:phoneNumber pwd:code] subscribeNext:^(id x) {
+    [[self.manager apploginWithPhone:phoneNumber pwd:code andUUID:identifierForDevice] subscribeNext:^(id x) {
         NSMutableDictionary *responseJsonOB=x;
         NSNumber *value = [responseJsonOB objectForKey:@"success"];
         // 去主页面
@@ -182,7 +184,10 @@
             }
         } else {
             [weakSelf hideHUD];
-            NSString *message = responseJsonOB[@"message"];
+            NSString *message = responseJsonOB[@"msg"];
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"phone"];
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"verifyCode"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             if (message.length == 0 || !message) {
                 message = @"用户名或验证码输入错误，请重新输入";
             }

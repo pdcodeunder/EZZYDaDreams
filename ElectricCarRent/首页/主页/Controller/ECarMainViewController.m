@@ -41,7 +41,8 @@
 
 // 导航
 #import "ECarMapNaviViewController.h"
-#import "ECarDrivingViewController.h"
+//#import "ECarDrivingViewController.h"
+#import "EZZYDrivingViewController.h"
 
 // 支付
 #import "ECarZhiFuViewController.h"
@@ -73,7 +74,7 @@ typedef NS_ENUM(NSInteger, PopoverAlert)
 
 typedef void (^BookCarBlock)(id model);
 
-@interface ECarMainViewController () <MAMapViewDelegate, AMapNaviManagerDelegate, IFlySpeechSynthesizerDelegate, ECarOrderViewControllerDelegate, ECarMyCenterViewControllerDelegate, AMapNaviViewControllerDelegate, UIAlertViewDelegate, UIScrollViewDelegate, ECarDrivingViewControllerDelegate, ECarMapNaviViewControllerDelegate>
+@interface ECarMainViewController () <MAMapViewDelegate, AMapNaviManagerDelegate,EZZYDrivingViewControllerDelegate, IFlySpeechSynthesizerDelegate, ECarOrderViewControllerDelegate, ECarMyCenterViewControllerDelegate, AMapNaviViewControllerDelegate, UIAlertViewDelegate, UIScrollViewDelegate, ECarMapNaviViewControllerDelegate>
 
 // UI
 @property (strong, nonatomic) UILabel               * mudiLabel;
@@ -122,7 +123,7 @@ typedef void (^BookCarBlock)(id model);
 // 语音导航
 @property (nonatomic, strong) IFlySpeechSynthesizer         * iFlySpeechSynthesizer;    // 语音
 @property (nonatomic, strong) ECarMapNaviViewController     * warkingNaviewContoller;   // 步行导航
-@property (nonatomic, strong) ECarDrivingViewController     * dringNaviViewController;  // 行车导航
+//@property (nonatomic, strong) ECarDrivingViewController     * dringNaviViewController;  // 行车导航
 @property (nonatomic, strong) AMapNaviPoint                 * startPoint;               // 导航起点
 @property (nonatomic, strong) AMapNaviPoint                 * endPoint;                 // 导航终点
 @property (nonatomic, assign) NavManagerTravelType            navManagerTravelType;     // 导航判断是驾车还是步行
@@ -457,8 +458,10 @@ typedef void (^BookCarBlock)(id model);
     if (phone.length == 0||code.length == 0) {
         return;
     }
+    NSString *identifierForDevice = [NSString stringWithFormat:@"%@", [UIDevice currentDevice].identifierForVendor.UUIDString];
+    PDLog(@"identifierForDevice:;  %@", identifierForDevice);
     // 网络请求
-    [[[ECarLoginRegisterManager new] apploginWithPhone:phone pwd:code] subscribeNext:^(id x) {
+    [[[ECarLoginRegisterManager new] apploginWithPhone:phone pwd:code andUUID:identifierForDevice] subscribeNext:^(id x) {
         NSMutableDictionary *responseJsonOB = x;
         NSNumber *value = [responseJsonOB objectForKey:@"success"];
         // 去主页面
@@ -477,6 +480,10 @@ typedef void (^BookCarBlock)(id model);
                 [alerview show];
             }
             self.config.loginStatue = YES;
+        } else {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"phone"];
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"verifyCode"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
         }
     } error:^(NSError *error) {
     } completed:^{
@@ -1037,6 +1044,11 @@ typedef void (^BookCarBlock)(id model);
 // 我的行程点击事件
 - (void)wodeXingChengClicked:(UIButton *)sender
 {
+//    EZZYDrivingViewController *drivingViewController = [[EZZYDrivingViewController alloc] init];
+//    drivingViewController.polyArray = self.polyArray;
+//    [self.navigationController pushViewController:drivingViewController animated:YES];
+//    return;
+    
     self.polyBool = !self.polyBool;
     if (self.polyBool) {
         [self.mapView removeOverlays:self.polyArray];
@@ -1131,16 +1143,17 @@ typedef void (^BookCarBlock)(id model);
 
 - (void)leftClick
 {
-    if (self.config.loginStatue)
-    {
+    NSString *phone = [[NSUserDefaults standardUserDefaults] objectForKey:@"phone"];
+    NSString *code = [[NSUserDefaults standardUserDefaults] objectForKey:@"verifyCode"];
+    if (phone.length != 0||code.length != 0) {
         self.myCenter = [[ECarMyCenterViewController alloc] init];
+        [ECarConfigs shareInstance].TokenID = code;
         self.myCenter.myCenterViewDelegate = self;
         UINavigationController * nv = [[UINavigationController alloc] initWithRootViewController:self.myCenter];
         [self.navigationController presentViewController:nv animated:NO completion:^{
             
         }];
-    }
-    else {
+    } else {
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"ECarLogin" bundle:[NSBundle mainBundle]];
         UIViewController *controller = (UIViewController *)[storyboard instantiateInitialViewController];
         [self.navigationController presentViewController:controller animated:NO completion:nil];
@@ -1421,31 +1434,43 @@ typedef void (^BookCarBlock)(id model);
     // 退出导航界面后恢复地图的状态
     if (self.config.exitTag == ExitNaviTagOpenLockSuccess) {
         //开锁成之后出现行车导航按钮
-        [self drivingNavi];
+        [self ezzyDrivingCar];
     }
 }
 
-#pragma mark 行车导航
-- (void)drivingNavi
+//#pragma mark 行车导航
+//- (void)drivingNavi
+//{
+//    self.dringNaviViewController = [[ECarDrivingViewController alloc]
+//                                    initWithDelegate:self];
+//    CLLocationCoordinate2D userCoordinate = self.config.userCoordinate;
+//    self.startPoint = [AMapNaviPoint locationWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude];
+//    self.endPoint = [AMapNaviPoint locationWithLatitude:self.userDestitation.location.latitude longitude:self.userDestitation.location.longitude];
+//    NSArray *startPoints = @[self.startPoint];
+//    NSArray *endPoints   = @[self.endPoint];
+//    self.naviType = NavigationTypeGPS;
+//    self.navManagerTravelType = NavManagerTravelTypeDring;
+//    self.isWalkingNav = NO;
+//    BOOL suceess = [self.naviManager calculateDriveRouteWithStartPoints:startPoints endPoints:endPoints wayPoints:nil drivingStrategy:0];
+//    self.mapView.showsUserLocation = NO;
+//    [self showHUD:@"正在规划导航路线"];
+//    if (suceess) {
+//    } else {
+//        [self hideHUD];
+//        self.navManagerTravelType = NavManagerTravelTypeDefault;
+//    }
+//}
+
+- (void)ezzyDrivingCar
 {
-    self.dringNaviViewController = [[ECarDrivingViewController alloc]
-                                    initWithDelegate:self];
-    CLLocationCoordinate2D userCoordinate = self.config.userCoordinate;
-    self.startPoint = [AMapNaviPoint locationWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude];
-    self.endPoint = [AMapNaviPoint locationWithLatitude:self.userDestitation.location.latitude longitude:self.userDestitation.location.longitude];
-    NSArray *startPoints = @[self.startPoint];
-    NSArray *endPoints   = @[self.endPoint];
+    EZZYDrivingViewController *drivingViewController = [[EZZYDrivingViewController alloc] init];
+    drivingViewController.polyArray = self.polyArray;
+    drivingViewController.carInfo = self.selectCar;
+    [drivingViewController checkLanYa];
     self.naviType = NavigationTypeGPS;
     self.navManagerTravelType = NavManagerTravelTypeDring;
     self.isWalkingNav = NO;
-    BOOL suceess = [self.naviManager calculateDriveRouteWithStartPoints:startPoints endPoints:endPoints wayPoints:nil drivingStrategy:0];
-    self.mapView.showsUserLocation = NO;
-    [self showHUD:@"正在规划导航路线"];
-    if (suceess) {
-    } else {
-        [self hideHUD];
-        self.navManagerTravelType = NavManagerTravelTypeDefault;
-    }
+    [self.navigationController pushViewController:drivingViewController animated:NO];
 }
 
 - (void)naviManagerOnCalculateRouteSuccess:(AMapNaviManager *)naviManager
@@ -1460,11 +1485,12 @@ typedef void (^BookCarBlock)(id model);
         [self.warkingNaviewContoller checkLanYa];
         self.warkingNaviewContoller.viewShowMode = AMapNaviViewShowModeCarNorthDirection;
         [self.naviManager presentNaviViewController:self.warkingNaviewContoller animated:NO];
-    } else if (self.navManagerTravelType == NavManagerTravelTypeDring) {
-        [self delayHidHUD:@"规划成功"];
-        [self presentDrivingViewWithModel:self.selectCar];
-        
     }
+//    else if (self.navManagerTravelType == NavManagerTravelTypeDring) {
+//        [self delayHidHUD:@"规划成功"];
+//        [self presentDrivingViewWithModel:self.selectCar];
+//        
+//    }
 }
 
 - (void)naviManager:(AMapNaviManager *)naviManager onCalculateRouteFailure:(NSError *)error
@@ -1512,9 +1538,9 @@ typedef void (^BookCarBlock)(id model);
     }
     [self.naviManager dismissNaviViewControllerAnimated:NO];
     
-    if ([naviViewController isKindOfClass:[ECarDrivingViewController class]]) {
-        [self addzhifuViewJieshu];
-    }
+//    if ([naviViewController isKindOfClass:[ECarDrivingViewController class]]) {
+//        [self addzhifuViewJieshu];
+//    }
     self.mapView.frame = CGRectMake(0, 0, kScreenW, kScreenH);
     [self configMagView];
     self.isWalkingNav = NO;
@@ -1531,6 +1557,11 @@ typedef void (^BookCarBlock)(id model);
     if (_detailView) {
         [self detailViewHidde:YES];
     }
+}
+
+- (void)endOrderBackZhiFu
+{
+    [self addzhifuViewJieshu];
 }
 
 #pragma mark 添加支付界面
@@ -1641,40 +1672,43 @@ typedef void (^BookCarBlock)(id model);
 #pragma mark - 订单代理方法
 - (void)presentDringNavigationWithModel:(OrderModel *)model andCarInfo:(ECarCarInfo *)carInfo
 {
-    self.dringNaviViewController = [[ECarDrivingViewController alloc]
-                                    initWithDelegate:self];
-    
-    CLLocationCoordinate2D userCoordinate = self.config.userCoordinate;
-    self.startPoint = [AMapNaviPoint locationWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude];
-    self.endPoint = [AMapNaviPoint locationWithLatitude:model.endPLatitude.doubleValue longitude:model.endPLongitude.doubleValue];
-    NSArray *startPoints = @[self.startPoint];
-    NSArray *endPoints   = @[self.endPoint];
-    self.naviType = NavigationTypeGPS;
     self.selectCar = carInfo;
-    self.isWalkingNav = NO;
-    self.navManagerTravelType = NavManagerTravelTypeDring;
-    [self showHUD:@"正在规划路径..."];
-    BOOL success = [self.naviManager calculateDriveRouteWithStartPoints:startPoints endPoints:endPoints wayPoints:nil drivingStrategy:0];
-    self.mapView.showsUserLocation = NO;
-    if (success) {
-        
-    } else {
-        [self hideHUD];
-        [self delayHidHUD:@"无网络，请稍后再试"];
-        self.navManagerTravelType = NavManagerTravelTypeDefault;
-    }
+    [self ezzyDrivingCar];
+    
+//    self.dringNaviViewController = [[ECarDrivingViewController alloc]
+//                                    initWithDelegate:self];
+//    
+//    CLLocationCoordinate2D userCoordinate = self.config.userCoordinate;
+//    self.startPoint = [AMapNaviPoint locationWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude];
+//    self.endPoint = [AMapNaviPoint locationWithLatitude:model.endPLatitude.doubleValue longitude:model.endPLongitude.doubleValue];
+//    NSArray *startPoints = @[self.startPoint];
+//    NSArray *endPoints   = @[self.endPoint];
+//    self.naviType = NavigationTypeGPS;
+//    self.selectCar = carInfo;
+//    self.isWalkingNav = NO;
+//    self.navManagerTravelType = NavManagerTravelTypeDring;
+//    [self showHUD:@"正在规划路径..."];
+//    BOOL success = [self.naviManager calculateDriveRouteWithStartPoints:startPoints endPoints:endPoints wayPoints:nil drivingStrategy:0];
+//    self.mapView.showsUserLocation = NO;
+//    if (success) {
+//        
+//    } else {
+//        [self hideHUD];
+//        [self delayHidHUD:@"无网络，请稍后再试"];
+//        self.navManagerTravelType = NavManagerTravelTypeDefault;
+//    }
 }
 
-- (void)presentDrivingViewWithModel:(ECarCarInfo *)carInfo
-{
-    self.dringNaviViewController.showTrafficBar = NO;
-    self.dringNaviViewController.showUIElements = NO;
-    self.dringNaviViewController.carInfo = carInfo;
-    self.dringNaviViewController.drivingDelegate = self;
-    self.dringNaviViewController.viewShowMode = AMapNaviViewShowModeCarNorthDirection;
-    [self.dringNaviViewController checkLanYa];
-    [self.naviManager presentNaviViewController:self.dringNaviViewController animated:NO];
-}
+//- (void)presentDrivingViewWithModel:(ECarCarInfo *)carInfo
+//{
+//    self.dringNaviViewController.showTrafficBar = NO;
+//    self.dringNaviViewController.showUIElements = NO;
+//    self.dringNaviViewController.carInfo = carInfo;
+//    self.dringNaviViewController.drivingDelegate = self;
+//    self.dringNaviViewController.viewShowMode = AMapNaviViewShowModeCarNorthDirection;
+//    [self.dringNaviViewController checkLanYa];
+//    [self.naviManager presentNaviViewController:self.dringNaviViewController animated:NO];
+//}
 
 - (void)presentWarkingNavigationWithModel:(OrderModel *)model andCarInfo:(ECarCarInfo *)carInfo
 {
@@ -1740,15 +1774,15 @@ typedef void (^BookCarBlock)(id model);
 }
 
 #pragma mark - ECarDrivingViewControllerDelegate （可删）
-- (void)zhifuViewPresentWithState:(BOOL)State
-{
-    weak_Self(self);
-    ECarZhiFuViewController * zhifu = [[ECarZhiFuViewController alloc] init];
-    zhifu.panduan = State;
-    zhifu.zhifublock = ^{
-        [weakSelf.naviManager presentNaviViewController:self.dringNaviViewController animated:NO];
-    };
-}
+//- (void)zhifuViewPresentWithState:(BOOL)State
+//{
+//    weak_Self(self);
+//    ECarZhiFuViewController * zhifu = [[ECarZhiFuViewController alloc] init];
+//    zhifu.panduan = State;
+//    zhifu.zhifublock = ^{
+//        [weakSelf.naviManager presentNaviViewController:self.dringNaviViewController animated:NO];
+//    };
+//}
 
 #pragma mark - ECarWorkingViewControllerDelegate
 - (void)startSpeekingRoadInfo

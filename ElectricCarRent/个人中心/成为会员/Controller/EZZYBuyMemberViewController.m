@@ -7,7 +7,7 @@
 //
 
 #import "EZZYBuyMemberViewController.h"
-#import "ECarZhiFuViewController.h"
+#import "EZZYMemberZhiFuViewController.h"
 #import "EZZYMemberModle.h"
 #import "ECarConfigs.h"
 #import "ECarUserManager.h"
@@ -81,7 +81,7 @@
 {
     [self showHUD:@"请稍等..."];
     weak_Self(self);
-    ECarZhiFuViewController * zhifuVC = [[ECarZhiFuViewController alloc] init];
+    EZZYMemberZhiFuViewController * zhifuVC = [[EZZYMemberZhiFuViewController alloc] init];
     [[self.useManager creatOrderByRenyuanID:[ECarConfigs shareInstance].user.phone vipType:self.modle.levelCode lastNum:@"10"] subscribeNext:^(id x) {
         [weakSelf hideHUD];
         NSDictionary * dic = x;
@@ -96,12 +96,7 @@
         ECarConfigs * config = [ECarConfigs shareInstance];
         config.orignOrderNo = [NSString stringWithFormat:@"%@", [dictx objectForKey:@"orderId"]];
         config.currentPrice = [NSString stringWithFormat:@"%.2lf", weakSelf.modle.levelMoney.floatValue];
-        
-        zhifuVC.priceCar = [NSString stringWithFormat:@"%@", weakSelf.modle.levelMoney];
         zhifuVC.priceUnit = self.modle.levelUnit;
-        zhifuVC.orderID = dictx[@"orderId"];
-        zhifuVC.canBack = YES;
-        zhifuVC.sendType = sendToHouTaiByVip;
         [self.navigationController pushViewController:zhifuVC animated:YES];
     } error:^(NSError *error) {
         [weakSelf delayHidHUD:MESSAGE_NoNetwork];

@@ -416,6 +416,7 @@
         dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%f", userCoordinate.longitude], @"longitude", [NSString stringWithFormat:@"%f", userCoordinate.latitude], @"latitude", [NSString stringWithFormat:@"%f", destination.longitude], @"Terminilongitude", [NSString stringWithFormat:@"%f", destination.latitude], @"Terminilatitude", yonghuID, @"phone", nil];
         doVerifyurl = [NSString stringWithFormat:@"%@car/tCCarStatusController.do?findAreaCar", ServerURL];
     }
+    
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableArray *carAry = [[NSMutableArray alloc] init];
         NSMutableDictionary *dic = parse.responseJsonOB;
@@ -426,7 +427,6 @@
         }
         [subject sendNext:carAry];
         [subject sendCompleted];
-        
     } failure:^(KKHttpParse *parse) {
         [subject sendError:nil];
         [subject sendCompleted];

@@ -112,7 +112,7 @@
     }];
 }
 
-- (void)creatNavBar{
+- (void)creatNavBar {
     
     UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectMake(0, -10, 30, 30);
@@ -712,9 +712,10 @@
             req.package             = [dict objectForKey:@"package"];
             req.sign                = [dict objectForKey:@"sign"];
             [WXApi sendReq:req];
-        }else{
+        } else {
             [self alert:@"提示信息" msg:[dict objectForKey:@"retmsg"]];
         }
+        
     }else{
         [ECarConfigs shareInstance].zhifuwancheng = 0;
         [self alert:@"提示信息" msg:@"调用微信失败，请重试"];
@@ -724,9 +725,7 @@
 - (void)alert:(NSString *)title msg:(NSString *)msg
 {
     UIAlertView *alter = [[UIAlertView alloc] initWithTitle:title message:msg delegate:nil cancelButtonTitle:@"确认" otherButtonTitles:nil];
-    
     [alter show];
-    //    [alter release];
 }
 
 - (void)callSaver:(UIButton *)sender

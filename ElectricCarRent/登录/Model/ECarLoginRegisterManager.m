@@ -104,7 +104,7 @@
 - (DSASubject *)loginOut:(NSString *)phone
 {
     DSASubject *subject=[DSASubject subject];
-    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:phone,@"phone",TokenPrams, nil];
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:phone,@"phone", TokenPrams, nil];
     NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/loginController.do?logout2", ServerURL];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
@@ -117,10 +117,10 @@
     return subject;
 }
 
-- (DSASubject *)apploginWithPhone:(NSString *)phone pwd:(NSString *)pwd
+- (DSASubject *)apploginWithPhone:(NSString *)phone pwd:(NSString *)pwd andUUID:(NSString *)uuiddd
 {
     DSASubject *subject=[DSASubject subject];
-    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:phone,@"phone",pwd,@"verify", TokenPrams, nil];
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:phone, @"phone", pwd, @"verify", uuiddd, @"iphoneid", TokenPrams, nil];
     NSString *loginurl=[NSString stringWithFormat:@"%@car/tCMemberController.do?AppLogin", ServerURL];
     [KKHttpServices httpPostUrl:loginurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSDictionary *dic = [ToolKit JSONDecodeFromString:operation.responseString];

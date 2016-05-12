@@ -7,13 +7,14 @@
 //
 
 #import "ECarUserManager.h"
+#import "EZZYNetworkingService.h"
 
 @implementation ECarUserManager
 - (DSASubject *)savePicture:(NSString *)userid fileName:(NSString *)file type:(UploadPictureTypes)cardType
 {
     DSASubject *subject=[DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:userid,@"userId",file,@"fileName",[NSString stringWithFormat:@"%ld",(long)cardType],@"cardType",TokenPrams, nil];
-    NSString *loginurl=[NSString stringWithFormat:@"%@car/pictureController.do?save", ServerURL];
+    NSString *loginurl=[NSString stringWithFormat:@"%@%@", ServerURL, kServePickter];
     [KKHttpServices httpPostUrl:loginurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSDictionary *dic = [ToolKit JSONDecodeFromString:operation.responseString];
         [subject sendNext:dic];
@@ -31,7 +32,7 @@
     DSASubject *subject=[DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:userid, @"phone",file, @"file",TokenPrams, nil];
 //    NSLog(@"JHHHHFDF  %@", userid);
-    NSString *loginurl=[NSString stringWithFormat:@"%@car/tCMemberController.do?uploadPicCarno", ServerURL];
+    NSString *loginurl=[NSString stringWithFormat:@"%@%@", ServerURL, kUpdatePickterInfo];
     [KKHttpServices httpPostUrl:loginurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -48,7 +49,7 @@
 {
     DSASubject *subject=[DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:userid,@"userId",TokenPrams, nil];
-    NSString *loginurl=[NSString stringWithFormat:@"%@car/pictureController.do?getPicture", ServerURL];
+    NSString *loginurl=[NSString stringWithFormat:@"%@%@", ServerURL, kGetPickterInfo];
     [KKHttpServices httpPostUrl:loginurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSDictionary *dic = [ToolKit JSONDecodeFromString:operation.responseString];
         [subject sendNext:dic];
@@ -68,7 +69,7 @@
     ECarUser *user = [ECarConfigs shareInstance].user;
     
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:user.phone,@"phone",TokenPrams, nil];
-    NSString *doVerifyurl = [NSString stringWithFormat:@"%@car/tCMemberController.do?getMember2", ServerURL];
+    NSString *doVerifyurl = [NSString stringWithFormat:@"%@%@", ServerURL, kRefreshUserInfo];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse)
     {
         NSMutableDictionary *dic = parse.responseJsonOB;
@@ -109,7 +110,7 @@
                          TokenPrams,
                          nil];
     
-    NSString *loginurl=[NSString stringWithFormat:@"%@car/tCMemberController.do?doUpdateInfo", ServerURL];
+    NSString *loginurl=[NSString stringWithFormat:@"%@%@", ServerURL, kUpdateUserInfo];
     [KKHttpServices httpPostUrl:loginurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSDictionary *dic = [ToolKit JSONDecodeFromString:operation.responseString];
         [subject sendNext:dic];
@@ -136,7 +137,7 @@
                          phone,@"pmobile",
                          TokenPrams,
                          nil];
-    NSString *loginurl=[NSString stringWithFormat:@"%@car/tCMemberController.do?doUpdateInfo", ServerURL];
+    NSString *loginurl=[NSString stringWithFormat:@"%@%@", ServerURL, kUpdateZhiFuInfo];
     [KKHttpServices httpPostUrl:loginurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSDictionary *dic = [ToolKit JSONDecodeFromString:operation.responseString];
         [subject sendNext:dic];
@@ -153,7 +154,7 @@
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:userid,@"id",TokenPrams, nil];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tCMemberController.do?changeAudit", ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kSubmitCheckInfo];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         NSDictionary *objDic = dic[@"obj"];
@@ -173,7 +174,7 @@
     
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:userid,@"id", dataArr, @"data", TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tCAddressBookController.do?addressList", ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kSubmitPhoneNumber];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
        NSDictionary *dic = [ToolKit JSONDecodeFromString:operation.responseString];
         [subject sendNext:dic];
@@ -198,7 +199,7 @@
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:renyuanID,@"phone", vipFreeCode, @"vipFreeCode", TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tCemberVipController.do?changeVipByFree", ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kMumberMianFeiCode];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
 
@@ -219,7 +220,7 @@
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:dingdanID,@"id", freeCode, @"freeCode", TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tCOrderController.do?userUseOnceFreeCode", ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kOnceYouHuiCode];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         NSDictionary *objDic = dic;
@@ -237,7 +238,7 @@
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:phoneNumber,@"phone",TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tCAddressBookController.do?checkIsFirstImport", ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kFirstSubmitPNumber];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSDictionary *dic = [ToolKit JSONDecodeFromString:operation.responseString];
         [subject sendNext:dic];
@@ -254,7 +255,7 @@
 - (DSASubject *)getMemberAllInfoPhone:(NSString *)phone{
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:phone,@"phone", TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tCemberVipController.do?checkUserVipState", ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kMumberInfo];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -273,7 +274,7 @@
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:renyuanID,@"phone", vipType, @"vipType", TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tCemberVipController.do?doBuyVipOrAdd", ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kBuyMember];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -291,7 +292,7 @@
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%zd", page],@"page", nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/paramConController.do?getVideoList", ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kMoveList];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -309,7 +310,7 @@
 - (DSASubject *)getAllMemberInfoByPhone:(NSString *)phone{
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:phone,@"phone", TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tVipAppController.do?getUerVipInformation", ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kGetMumberInfo];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -329,7 +330,7 @@
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:renyuanID, @"phone", vipType, @"vipType", lastNum, @"lastnum",TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tVipAppController.do?BuyVipOrder", ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kGetBuyMemberOrder];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -346,7 +347,7 @@
 - (DSASubject* )aboutUs
 {
     DSASubject *subject = [DSASubject subject];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/paramConController.do?getGywm", ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kAboutUs];
     [KKHttpServices httpPostUrl:doVerifyurl prams:nil success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -363,7 +364,7 @@
 - (DSASubject* )connectUs
 {
     DSASubject *subject = [DSASubject subject];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/paramConController.do?getLxwm", ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kConnectionUs];
     [KKHttpServices httpPostUrl:doVerifyurl prams:nil success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -381,7 +382,7 @@
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:phone,@"phone",TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tCemberVipController.do?vipCountDown",ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@",ServerURL, kMemberDaoQi];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -392,7 +393,6 @@
          [subject sendCompleted];
      }];
     return subject;
-    
 }
 
 /**
@@ -402,7 +402,7 @@
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:phone, @"phone", page, @"page", TokenPrams, nil];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/appReceiptController.do?getOrderReceipt",ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@",ServerURL, kXingChengFaPList];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -417,13 +417,13 @@
 }
 
 /**
- *  行程发票列表
+ *  购买会员发票列表
  */
 - (DSASubject* )goumaiHuiYuanFaPiaoWithPhone:(NSString *)phone andPage:(NSString *)page
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:phone, @"phone", page, @"page", TokenPrams, nil];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/appReceiptController.do?getVIPOrderReceipt",ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@",ServerURL, kBuyMemberFaPiao];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -444,7 +444,7 @@
 {
     DSASubject *subject = [DSASubject subject];
 
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/appReceiptController.do?getOrderReceiptOrder",ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@",ServerURL, kSubmitXCFP];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -464,7 +464,7 @@
 {
     DSASubject *subject = [DSASubject subject];
     
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/appReceiptController.do?getVipOrderReceiptOrder",ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@",ServerURL, kSubmitVIPFA];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -484,7 +484,7 @@
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:phone,@"phone",type,@"type",page,@"page",TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/appReceiptController.do?getVipOrderReceiptList",ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@",ServerURL, kBuyMemberKPHistory];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -505,7 +505,7 @@
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:phone,@"phone",type,@"type",page,@"page",TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/appReceiptController.do?getOrderReceiptList",ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@",ServerURL, kXingChengKPStory];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -544,7 +544,7 @@
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:pid, @"pid", TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tcpeccancyController.do?toProcessed", ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kWeiZhangZiChuLi];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -561,7 +561,7 @@
 - (DSASubject* )weizhangshuoming
 {
     DSASubject *subject = [DSASubject subject];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tcpeccancyController.do?getProcessedExplain",ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@",ServerURL, kWeiZhangShuoMing];
     [KKHttpServices httpPostUrl:doVerifyurl prams:nil success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -579,7 +579,7 @@
 - (DSASubject* )xingchengShuoMing
 {
     DSASubject *subject = [DSASubject subject];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/appReceiptController.do?getinvoiveexplain",ServerURL];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@",ServerURL, kXingChengShuoMing];
     [KKHttpServices httpPostUrl:doVerifyurl prams:nil success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];

@@ -65,8 +65,8 @@
     
     ECarPictureTestViewController * picture = [[ECarPictureTestViewController alloc] init];
     [picture returnText:^(NSString *blckStr) {
-        NSString *phone = [[NSUserDefaults standardUserDefaults]objectForKey:@"phone"];
-        NSString *code = [[NSUserDefaults standardUserDefaults]objectForKey:@"verifyCode"];
+        NSString *phone = [[NSUserDefaults standardUserDefaults] objectForKey:@"phone"];
+        NSString *code = [[NSUserDefaults standardUserDefaults] objectForKey:@"verifyCode"];
         if (phone.length == 0||code.length == 0) {
             return;
         }

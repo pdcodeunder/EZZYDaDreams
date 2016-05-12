@@ -19,6 +19,6 @@
 
 - (DSASubject *)registerJpushid:(NSString *)phone jpushid:(NSString *)jpushid;
 
-- (DSASubject *)apploginWithPhone:(NSString *)phone pwd:(NSString *)pwd;
+- (DSASubject *)apploginWithPhone:(NSString *)phone pwd:(NSString *)pwd andUUID:(NSString *)uuid;
 
 @end
