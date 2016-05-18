@@ -6,12 +6,12 @@
     },
     {
       "idiom" : "universal",
-      "filename" : "guiwei30*30@2x.png",
+      "filename" : "baoye@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "guiwei30*30@3x.png",
+      "filename" : "baoye@3x.png",
       "scale" : "3x"
     }
   ],

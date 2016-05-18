@@ -267,6 +267,11 @@
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"buyMemberZhiFuFinished" object:nil userInfo:nil];
                     return;
                 }
+                
+                if (config.zhifuwancheng == 50) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"baoYeZhiFuWanCheng" object:nil userInfo:nil];
+                    return;
+                }
                 strTitle = @"支付成功";
                 strMsg = @"为了方便下一位用户顺利使用车辆，请您下车后关闭车门，感谢您的配合";
                 [ECarConfigs shareInstance].cheliangchaochu = 0;

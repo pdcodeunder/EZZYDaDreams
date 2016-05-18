@@ -168,4 +168,7 @@
 // 行程说明
 - (DSASubject* )xingchengShuoMing;
 
+// 包夜
+- (DSASubject* )baoyefeiWithDingdanId:(NSString * )dingdanId;
+
 @end

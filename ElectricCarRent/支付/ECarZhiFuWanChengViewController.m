@@ -69,11 +69,11 @@
     UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectMake(0, -10, 30, 30);
     [button setImage:[UIImage imageNamed:@"fanhui9*14"] forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+    [button addTarget:self action:@selector(backMainView) forControlEvents:UIControlEventTouchUpInside];
     
     button.contentEdgeInsets = UIEdgeInsetsMake(0, -20, 0, 0);
     
-    //    [self.navigationController.navigationBar addSubview:button];
+//    [self.navigationController.navigationBar addSubview:button];
     
     UIBarButtonItem *leftBarItem = [[UIBarButtonItem alloc] initWithCustomView:button];
     self.navigationItem.leftBarButtonItem = leftBarItem;
@@ -87,6 +87,11 @@
     [right addTarget:self action:@selector(fenxiangAction:) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *rightbu = [[UIBarButtonItem alloc] initWithCustomView:right];
     self.navigationItem.rightBarButtonItem = rightbu;
+}
+
+- (void)backMainView
+{
+    [self.navigationController popToRootViewControllerAnimated:NO];
 }
 
 - (void)fenxiangAction:(UIButton *)sender

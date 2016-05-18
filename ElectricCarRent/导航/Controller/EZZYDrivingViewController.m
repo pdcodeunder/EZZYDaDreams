@@ -9,6 +9,7 @@
 #import "EZZYDrivingViewController.h"
 #import "ECarMapManager.h"
 #import "PDLanYaLianJie.h"
+#import "NewOverNeightViewController.h"
 
 // 地图
 #import <AMapNaviKit/MAMapKit.h>
@@ -137,6 +138,20 @@ static int indexee = 0;
     [saverBtn addTarget:self action:@selector(callSaver:) forControlEvents:UIControlEventTouchUpInside];
     [topView addSubview:saverBtn];
     
+    UIButton *baoyeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    baoyeBtn.frame = CGRectMake(0, CGRectGetMaxY(topView.frame) + 15 / 667.0 * kScreenH, 51 / 375.0 * kScreenW, 76 / 667.0 * kScreenH);
+    baoyeBtn.right = kScreenW - 10 / 375.0 * kScreenW;
+    [baoyeBtn setImage:[UIImage imageNamed:@"baoye"] forState:UIControlStateNormal];
+    [baoyeBtn addTarget:self action:@selector(baoYeBtnClicked) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:baoyeBtn];
+    
+    UIButton *guiWeiBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    guiWeiBtn.frame = baoyeBtn.frame;
+    guiWeiBtn.top = baoyeBtn.bottom - 20 / 667.0 * kScreenH;
+    [guiWeiBtn setImage:[UIImage imageNamed:@"dingwei"] forState:UIControlStateNormal];
+    [guiWeiBtn addTarget:self action:@selector(guiWeiBtnClicked) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:guiWeiBtn];
+    
     self.chaochuLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, kScreenH - 124 - 75, kScreenW, 75)];
     self.chaochuLabel.text = @"您已驶出运营区域，超区域费为20元/公里，请您迅速行驶回运营区域。";
     self.chaochuLabel.textColor = RedColor;
@@ -236,7 +251,7 @@ static int indexee = 0;
         NSString * qibujia = [NSString stringWithFormat:@"%@", obj[@"qibujia"]];
         NSString *lichengfei = [NSString stringWithFormat:@"%@", obj[@"lichengfei"]];
         NSString * disufei = [NSString stringWithFormat:@"%@", obj[@"disufei"]];
-        NSString * fanweiWai = [NSString stringWithFormat:@"%@", obj[@"fanweiwai"]];
+        NSString * fanweiWai = obj[@"fanweiwai"];
         NSString * prStr = nil;
         NSMutableArray *array = [[NSMutableArray alloc] init];
         if (qibujia.floatValue > 0.001) {
@@ -248,7 +263,7 @@ static int indexee = 0;
         if (disufei.floatValue > 0.001) {
             [array addObject:[NSString stringWithFormat:@"低速费%@元", disufei]];
         }
-        [array addObject:[NSString stringWithFormat:@"超区域费%@元", fanweiWai]];
+        [array addObject:[NSString stringWithFormat:@"超区域费%zd元", fanweiWai == nil ? 0 : fanweiWai.integerValue]];
         prStr = [array componentsJoinedByString:@"+"];
         
         NSDictionary * attribute = dic[@"attributes"];
@@ -370,7 +385,7 @@ static int indexee = 0;
     // 语速,取值范围 0~100
     [_iFlySpeechSynthesizer setParameter:@"50" forKey:@"speed"];
     // 音量;取值范围 0~100
-    [_iFlySpeechSynthesizer setParameter:@"50" forKey: @"volume"];
+    [_iFlySpeechSynthesizer setParameter:@"100" forKey: @"volume"];
     // 发音人,默认为”xiaoyan”;可以设置的参数列表可参考个 性化发音人列表
     [_iFlySpeechSynthesizer setParameter:@" xiaoyan " forKey: @"voice_name"];
     // 音频采样率,目前支持的采样率有 16000 和 8000
@@ -382,6 +397,17 @@ static int indexee = 0;
 }
 
 #pragma mark - 按钮响应事件
+- (void)guiWeiBtnClicked
+{
+    [self.drivingMapView setUserTrackingMode:MAUserTrackingModeFollow animated:YES];
+}
+
+- (void)baoYeBtnClicked
+{
+    NewOverNeightViewController *overNeight = [[NewOverNeightViewController alloc] init];
+    [self.navigationController pushViewController:overNeight animated:YES];
+}
+
 - (void)EcarKaiSouClicked:(UIButton *)sender
 {
     if (self.lanya.lanYaStatus == YES) {
@@ -477,7 +503,7 @@ static int indexee = 0;
         } else {
             NSString * obj = [NSString stringWithFormat:@"%@", dic[@"obj"]];
             confige.currentPrice = obj;
-            UIAlertView * alert  = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请您下车并关好车门，一分钟后车门自动关锁" delegate:weakSelf cancelButtonTitle:@"确认" otherButtonTitles:nil, nil];
+            UIAlertView *alert  = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请您下车并关好车门，一分钟后车门自动关锁" delegate:weakSelf cancelButtonTitle:@"确认" otherButtonTitles:nil, nil];
             alert.tag = 2434;
             [alert show];
         }
@@ -581,7 +607,7 @@ static int indexee = 0;
         return;
     }
     if ([str isEqualToString:@"111222"]) {
-        //        [self delayHidHUD:@"链接异常，请重新操作"];
+//        [self delayHidHUD:@"链接异常，请重新操作"];
         [self.lanya deallocSharedLanYa];
         if (self.carLockSendStates == CarLockSendStatesOpen) {
             [self EcarKaiSouClicked:nil];
@@ -594,46 +620,46 @@ static int indexee = 0;
         [self.lanya beginBlueToothWithDiverceName:self.carInfo.lanYaName];
         return;
     }
-    //    int count = 0;
-    //    int zhiding = 0;
-    //    if ([str characterAtIndex:0] - 48 == 1) {
-    //        count ++;
-    //        zhiding = 1;
-    //    }
-    //    if ([str characterAtIndex:1] - 48 == 1) {
-    //        count ++;
-    //        zhiding = 2;
-    //    }
-    //    if ([str characterAtIndex:2] - 48 == 1) {
-    //        count ++;
-    //        zhiding = 3;
-    //    }
-    //    if ([str characterAtIndex:3] - 48 == 1) {
-    //        count ++;
-    //        zhiding = 4;
-    //    }
-    //    if ([str characterAtIndex:4] - 48 == 1) {
-    //        count ++;
-    //        zhiding = 5;
-    //    }
-    //    if (count > 1) {
-    //        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请将车门关好再关闭车锁。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-    //        [alertView show];
-    //        return;
-    //    } else if (zhiding > 0) {
-    //        NSArray * array = @[@"右前门", @"右后门", @"左前门", @"左后门", @"后备箱"];
-    //        NSString * meg = [NSString stringWithFormat:@"%@没有关好，请重新关闭车门再关闭车锁。", array[zhiding - 1]];
-    //        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:meg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-    //        [alertView show];
-    //        return;
-    //    }
-    //    if ([str characterAtIndex:5] - 48 == 1 && self.carLockSendStates == CarLockSendStatesOpen) {
-    //        [self delayHidHUD:@"中控开启"];
-    //        self.carLockSendStates = CarLockSendStatesDefault;
-    //    } else if ([str characterAtIndex:5] - 48 == 0 && self.carLockSendStates == CarLockSendStatesClose) {
-    //        [self delayHidHUD:@"中控关闭"];
-    //        self.carLockSendStates = CarLockSendStatesDefault;
-    //    }
+//    int count = 0;
+//    int zhiding = 0;
+//    if ([str characterAtIndex:0] - 48 == 1) {
+//        count ++;
+//        zhiding = 1;
+//    }
+//    if ([str characterAtIndex:1] - 48 == 1) {
+//        count ++;
+//        zhiding = 2;
+//    }
+//    if ([str characterAtIndex:2] - 48 == 1) {
+//        count ++;
+//        zhiding = 3;
+//    }
+//    if ([str characterAtIndex:3] - 48 == 1) {
+//        count ++;
+//        zhiding = 4;
+//    }
+//    if ([str characterAtIndex:4] - 48 == 1) {
+//        count ++;
+//        zhiding = 5;
+//    }
+//    if (count > 1) {
+//        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请将车门关好再关闭车锁。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        [alertView show];
+//        return;
+//    } else if (zhiding > 0) {
+//        NSArray * array = @[@"右前门", @"右后门", @"左前门", @"左后门", @"后备箱"];
+//        NSString * meg = [NSString stringWithFormat:@"%@没有关好，请重新关闭车门再关闭车锁。", array[zhiding - 1]];
+//        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:meg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        [alertView show];
+//        return;
+//    }
+//    if ([str characterAtIndex:5] - 48 == 1 && self.carLockSendStates == CarLockSendStatesOpen) {
+//        [self delayHidHUD:@"中控开启"];
+//        self.carLockSendStates = CarLockSendStatesDefault;
+//    } else if ([str characterAtIndex:5] - 48 == 0 && self.carLockSendStates == CarLockSendStatesClose) {
+//        [self delayHidHUD:@"中控关闭"];
+//        self.carLockSendStates = CarLockSendStatesDefault;
+//    }
 }
 
 #pragma mark - UIAlertView
@@ -674,7 +700,10 @@ static int indexee = 0;
 {
     [self.lanya deallocSharedLanYa];
     [self hideHUD];
-    
+    [self.navigationController popViewControllerAnimated:NO];
+    if ([self.drivingDelegate respondsToSelector:@selector(endOrderBackZhiFu)]) {
+        [self.drivingDelegate endOrderBackZhiFu];
+    }
 }
 
 /**

@@ -310,7 +310,7 @@
 - (DSASubject *)getAllMemberInfoByPhone:(NSString *)phone{
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:phone,@"phone", TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kGetMumberInfo];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kGetMumberInfoNew];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -330,7 +330,8 @@
 {
     DSASubject *subject = [DSASubject subject];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:renyuanID, @"phone", vipType, @"vipType", lastNum, @"lastnum",TokenPrams,nil ];
-    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kGetBuyMemberOrder];
+    PDLog(@"%@", dic);
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@%@", ServerURL, kBuyMemberOrderNew];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableDictionary *dic = parse.responseJsonOB;
         [subject sendNext:dic];
@@ -591,6 +592,24 @@
      }];
     return subject;
     
+}
+
+// 包夜
+- (DSASubject* )baoyefeiWithDingdanId:(NSString * )dingdanId
+{
+    DSASubject *subject = [DSASubject subject];
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:dingdanId, @"id", TokenPrams,nil ];
+    NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tCOnsController.do?onstext",ServerURL];
+    [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
+        NSMutableDictionary *dic = parse.responseJsonOB;
+        [subject sendNext:dic];
+        [subject sendCompleted];
+    } failure:^(KKHttpParse *parse)
+     {
+         [subject sendError:nil];
+         [subject sendCompleted];
+     }];
+    return subject;
 }
 
 @end

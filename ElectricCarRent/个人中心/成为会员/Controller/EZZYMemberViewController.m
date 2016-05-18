@@ -67,7 +67,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (_tableView) {
+    if (_isFirst == YES) {
         [self createSourseData];
     }
 }
@@ -75,7 +75,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.isFirst = YES;
+    self.isFirst = NO;
     _manage = [[ECarUserManager alloc] init];
     self.title = @"成为会员";
     [self createTableView];
@@ -100,8 +100,8 @@
     [[_manage getAllMemberInfoByPhone:_configs.user.phone] subscribeNext:^(id x) {
         [weakSelf hideHUD];
         NSDictionary * dic = x;
-        
-        NSString * success = [NSString stringWithFormat:@"%@", dic[@"success"]];
+        PDLog(@"%@", dic);
+        NSString *success = [NSString stringWithFormat:@"%@", dic[@"success"]];
         if (success.boolValue == 0) {
             NSString * msg = [NSString stringWithFormat:@"%@", dic[@"msg"]];
             UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:msg delegate:nil cancelButtonTitle:@"确认" otherButtonTitles:nil, nil];
@@ -112,9 +112,7 @@
         [weakSelf.dataSourse removeAllObjects];
         if (obj.count != 0) {
             for (NSDictionary *level in obj) {
-                if ([[NSString stringWithFormat:@"%@", level[@"levelCode"]] isEqualToString:@"20160218004"]) {
-                    continue;
-                }
+
                 EZZYMemberModle *model = [[EZZYMemberModle alloc] initWithDictionary:level];
                 [weakSelf.dataSourse addObject:model];
             }
@@ -127,10 +125,10 @@
             NSString * ztText = [NSString stringWithFormat:@"%@", dic[@"phoneMsg"]];
             _ztLabel.attributedText = [[NSAttributedString alloc] initWithString:ztText attributes:attributes];
             CGSize size = [ztText boundingRectWithSize:CGSizeMake(kScreenW - 30, 0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: FontType} context:nil].size;
-            if (_isFirst == YES) {
+            if (_isFirst == NO) {
                 weakSelf.ztLabel.bounds = CGRectMake(0, 0, kScreenW - 15, kScreenH - 64 - obj.count * 90.0 / 667.0 * kScreenH);
                 _ztLabel.textContainerInset = UIEdgeInsetsMake((weakSelf.ztLabel.height - size.height) / 2.0 - 10, 0, 0, 15);
-                _isFirst = NO;
+                _isFirst = YES;
             }
             _ztLabel.textColor = RedColor;
         }
@@ -165,7 +163,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     EZZYMemberModle *modle = [self.dataSourse objectAtIndex:indexPath.row];
-    if ([modle.levelCode isEqualToString:@"20160218003"]) {
+    if (indexPath.row == self.dataSourse.count - 1) {
         ECarXianXingMemberViewController *xianXing = [[ECarXianXingMemberViewController alloc] initWithXianXingModel:modle];
         [self.navigationController pushViewController:xianXing animated:YES];
     } else {

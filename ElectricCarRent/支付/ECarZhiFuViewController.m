@@ -27,6 +27,8 @@
 #import "ECarUser.h"
 #import "ECarUserManager.h"
 
+#import "ECarZhiFuWanChengViewController.h"
+
 @interface ECarZhiFuViewController () <UIAlertViewDelegate, UITextFieldDelegate>
 
 {
@@ -63,6 +65,18 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -74,22 +88,26 @@
     self.mapManager = [[ECarMapManager alloc] init];
     self.title = @"购买会员";
     self.str = @"";
-    if (self.canBack) {
-        [self creatNavBar];
-        [self setViewUI];
-    } else {
-        self.navigationController.navigationBarHidden = YES;
-        [self setViewUI];
-        UILabel * titLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, kScreenW, 44)];
-        titLabel.text = @"支付订单";
-        titLabel.font = [UIFont boldSystemFontOfSize:17.f];
-        titLabel.textAlignment = NSTextAlignmentCenter;
-        [self.view addSubview:titLabel];
-        // 添加灰线
-        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 63, kScreenW, 1)];
-        label.backgroundColor = GrayColor;
-        [self.view addSubview:label];
-    }
+    
+    self.navigationController.navigationBarHidden = YES;
+    [self setViewUI];
+    UILabel * titLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, kScreenW, 44)];
+    titLabel.text = @"支付订单";
+    titLabel.font = [UIFont boldSystemFontOfSize:17.f];
+    titLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:titLabel];
+    // 添加灰线
+    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 63, kScreenW, 1)];
+    label.backgroundColor = GrayColor;
+    [self.view addSubview:label];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationClicked) name:@"zhifuwancheng" object:nil];
+}
+
+- (void)notificationClicked
+{
+    ECarZhiFuWanChengViewController * zhifuwancheng = [[ECarZhiFuWanChengViewController alloc] init];
+    [self.navigationController pushViewController:zhifuwancheng animated:NO];
 }
 
 - (void)getjiagemingxi
@@ -500,11 +518,8 @@
 
 - (void)zhifubaoSendPay
 {
-    if (self.sendType == sendToHouTaiByVip) {
-        [ECarConfigs shareInstance].zhifuwancheng = 10;
-    } else {
-        [ECarConfigs shareInstance].zhifuwancheng = 0;
-    }
+
+    [ECarConfigs shareInstance].zhifuwancheng = 0;
     [ECarSharedPriceModel sharedPriceModel].zhifufangshi = kZhiFuFangShiZhiFuBao;
     NSString *partner = kPernerID;
     NSString *seller = kSallerID;
@@ -564,18 +579,8 @@
 //                NSString * strTitle = [NSString stringWithFormat:@"支付结果"];
                 NSString * strTitle = @"";
                 NSString * strMsg = @"";
-                if ([ECarConfigs shareInstance].zhifuwancheng == 10) {
-                    strTitle = @"支付成功";
-                    strMsg = @"恭喜您成为EZZY会员";
-                } else {
-                    strTitle = @"支付成功";
-                    strMsg = @"为了方便下一位用户顺利使用车辆，请您下车后关闭车门，感谢您的配合";
-                }
-                if ([ECarConfigs shareInstance].cheliangchaochu == 20) {
-                    [ECarConfigs shareInstance].cheliangchaochu = 0;
-                    strTitle = @"支付成功";
-                    strMsg = @"为了方便下一位用户顺利使用车辆，请您下车后关闭车门，感谢您的配合";
-                }
+                strTitle = @"支付成功";
+                strMsg = @"为了方便下一位用户顺利使用车辆，请您下车后关闭车门，感谢您的配合";
                 [ECarConfigs shareInstance].zhifuwancheng = 0;
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:strTitle message:strMsg delegate:self cancelButtonTitle:@"确认" otherButtonTitles:nil, nil];
                 alert.tag = 324;
@@ -583,11 +588,6 @@
             } else {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"支付结果" message:@"支付失败" delegate:nil cancelButtonTitle:@"确认" otherButtonTitles:nil, nil];
                 [alert show];
-            }
-            if ([ECarConfigs shareInstance].zhifuwancheng == 10) {
-                if (self.navigationController.viewControllers.count > 1) {
-                    [self.navigationController popToViewController:self.navigationController.viewControllers[1] animated:YES];
-                }
             }
         }];
     }
@@ -659,7 +659,7 @@
 {
     if (alertView.tag == 324) {
         if (buttonIndex == 0) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"zhifuwancheng" object:nil userInfo:nil];
+            [self notificationClicked];
         }
     }
     if (buttonIndex == 0 && alertView.tag == 212) {
@@ -672,11 +672,7 @@
 
 - (void)sendPaymeihoutai
 {
-    if (self.sendType == sendToHouTaiByVip) {
-        [ECarConfigs shareInstance].zhifuwancheng = 10;
-    } else {
-        [ECarConfigs shareInstance].zhifuwancheng = 0;
-    }
+    [ECarConfigs shareInstance].zhifuwancheng = 0;
     [ECarSharedPriceModel sharedPriceModel].zhifufangshi = kZhiFuFangShiWeiXin;
     if (![WXApi isWXAppInstalled]) {
         UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"亲，您还没有安装微信" delegate:nil cancelButtonTitle:@"确认" otherButtonTitles:nil];
@@ -693,12 +689,6 @@
     NSMutableDictionary *dict = [req sendPay_demo];
     //        NSLog(@"url:%@",urlString);
     if(dict != nil){
-        
-        if (self.sendType == sendToHouTaiByVip) {
-            [self diaoquhoutaiWinXinZhiFuByVIP];
-        }else{
-            [self diaoquhoutaiWinXinZhiFuByDingDan];
-        }
         NSMutableString *retcode = [dict objectForKey:@"retcode"];
         if (retcode.intValue == 0){
             NSMutableString *stamp  = [dict objectForKey:@"timestamp"];

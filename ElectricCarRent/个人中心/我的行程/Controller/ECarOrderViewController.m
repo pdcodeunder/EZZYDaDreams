@@ -158,7 +158,7 @@
             }
             [self.orderDelegate presentDringNavigationWithModel:model andCarInfo:carInfo];
         }
-    } else if (model.isfinish.intValue == 0) {
+    } else if (model.isfinish != nil && model.isfinish.intValue == 0) {
         [ECarConfigs shareInstance].orignOrderNo = model.orderID;
         //        PDLog(@"234345v  %@  %@", model.carPLatitude, model.carPLongtitude);
         if (self.mainViewOrder == 5) {
@@ -232,7 +232,7 @@
 {
     ECarConfigs * user=[ECarConfigs shareInstance];
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:user.user.user_id forKey:@"memberId"];
+    [params setObject:[NSString stringWithFormat:@"%@", user.user.user_id] forKey:@"memberId"];
     [params setObject:user.TokenID forKey:@"tokenId"];
     [params setObject:[NSString stringWithFormat:@"%zd", _page] forKey:@"page"];
     

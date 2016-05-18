@@ -216,8 +216,7 @@
     }];
     self.weizhangChuLiType = WeiZhangChuLiTypeChuLiZhong;
     self.severURL = @"car/tcpeccancyController.do?getProcessingPeccancy";
-    self.page = 1;
-    [self getDataSourceFormNetwork];
+    [self.tableView headerBeginRefreshing];
 }
 
 - (void)yichuliClicked:(UIButton *)sender
@@ -235,8 +234,7 @@
     }];
     self.weizhangChuLiType = WeiZhangChuLiTypeYiChuLi;
     self.severURL = @"car/tcpeccancyController.do?getProcessedPeccancy";
-    self.page = 1;
-    [self getDataSourceFormNetwork];
+    [self.tableView headerBeginRefreshing];
 }
 
 - (void)headDataSource

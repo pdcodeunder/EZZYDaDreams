@@ -39,6 +39,12 @@
 
 @property (assign, nonatomic) NSInteger biaoshi;
 
+@property (nonatomic, assign)NSInteger isBaoye; // 包夜的开关
+@property (nonatomic, copy) NSString *baoYeOrderId; // 包夜id
+@property (nonatomic, copy) NSString * baoyePrice; // 包夜价格
+
+@property (nonatomic, assign) NSInteger buyMemberNotify;
+
 // 运营时间
 @property (assign, nonatomic) NSInteger beginTime;
 @property (assign, nonatomic) NSInteger endTime;

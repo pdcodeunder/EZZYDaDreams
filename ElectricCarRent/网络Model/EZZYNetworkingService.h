@@ -51,11 +51,13 @@
 
 // 获取会员信息
 #define kMumberInfo         @"car/tCemberVipController.do?checkUserVipState"    // 以前的
-#define kGetMumberInfo      @"car/tVipAppController.do?getUerVipInformation"    // 现用的
+#define kGetMumberInfo      @"car/tVipAppController.do?getUerVipInformation"    // 2.4现用的
+#define kGetMumberInfoNew   @"car/tVipAppController.do?getUerVipInformationNew" // 2.5
 
 // 点击购买会员接口
 #define kBuyMember          @"car/tCemberVipController.do?doBuyVipOrAdd"        // 以前的
 #define kGetBuyMemberOrder  @"car/tVipAppController.do?BuyVipOrder"             // 现用的
+#define kBuyMemberOrderNew  @"car/tVipAppController.do?BuyVipOrderNew"          // 2.4后
 
 // 视频列表
 #define kMoveList           @"car/paramConController.do?getVideoList"

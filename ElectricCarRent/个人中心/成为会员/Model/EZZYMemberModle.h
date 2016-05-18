@@ -10,11 +10,9 @@
 
 @interface EZZYMemberModle : NSObject
 
-@property (nonatomic, strong) NSString *levelCode;
-@property (nonatomic, strong) NSString *levelMoney;
 @property (nonatomic, strong) NSString *levelName;
-@property (nonatomic, strong) NSString *levelUnit;
 @property (nonatomic, strong) NSString *note;
+@property (nonatomic, strong) NSMutableArray *subModels;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dic;
 

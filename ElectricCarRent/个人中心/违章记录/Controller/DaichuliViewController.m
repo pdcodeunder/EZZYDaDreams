@@ -237,6 +237,12 @@
 #pragma mark btnAction
 - (void)btnAction:(UIButton *)btn{
     if (btn.tag == 110) {
+        if (self.model.wzKouFen.integerValue >= 6)
+        {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"6分以上请自行处理" delegate:nil cancelButtonTitle:@"确认" otherButtonTitles:nil, nil];
+            [alertView show];
+            return;
+        }
         ECarWzwtViewController * vc = [[ECarWzwtViewController alloc] initWithWeiTuoModel:self.model];
         [self.navigationController pushViewController:vc animated:YES];
     }else if (btn.tag == 120){

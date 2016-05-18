@@ -107,6 +107,12 @@
     [self.view addSubview:weixinBtn];
     [self.view addSubview:view];
     
+    if (![WXApi isWXAppInstalled] || [ECarConfigs shareInstance].currentPrice.doubleValue > 3000) {
+        wxLabel.hidden = YES;
+        weixinBtn.hidden = YES;
+        view.hidden = YES;
+    }
+    
     // 支付按钮
     UIView * view1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenW, 70 / 667.f * kScreenH)];
     UIButton *zhifubaoBtn = [UIButton buttonWithType:UIButtonTypeCustom];

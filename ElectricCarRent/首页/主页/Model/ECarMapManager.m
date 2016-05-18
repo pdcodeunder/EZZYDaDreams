@@ -9,23 +9,17 @@
 #import "ECarMapManager.h"
 @implementation ECarMapManager
 
-- (DSASubject *)createOrder:(NSString *)carid userID:(NSString *)user_id begin:(NSString *)begin destination:(NSString *)destination area:(NSString *)area  power:(NSString *)power endLatitude:(NSString *)endPLatitude endLongitude:(NSString *)endPLongitude userLatitude:(NSString *)userSPLatitude userLongitude:(NSString *)userSPLongitude theCarLatitude:(NSString *)theCarLatitude theCarLongitude:(NSString *)theCarLongitude andCarLocation:(NSString *)carLocation
+- (DSASubject *)createOrder:(NSString *)carid userID:(NSString *)user_id begin:(NSString *)begin area:(NSString *)area userLatitude:(NSString *)userSPLatitude userLongitude:(NSString *)userSPLongitude
 {
     DSASubject *subject=[DSASubject subject];
 //    PDLog(@"1%@   2 %@    3%@    4%@     5%@    6%@    7%@    8%@    9%@    10%@, 1%@   2%@", carid, user_id, begin, destination,area,power, endPLatitude, endPLongitude, userSPLatitude, userSPLongitude,theCarLatitude, theCarLongitude);
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:
-                         [NSString stringWithFormat:@"%@", endPLatitude],@"endPLatitude",
-                         [NSString stringWithFormat:@"%@", endPLongitude],@"endPLongitude",
                          [NSString stringWithFormat:@"%@", userSPLatitude],@"userSPLatitude",
                          [NSString stringWithFormat:@"%@", userSPLongitude],@"userSPLongitude",
                          [NSString stringWithFormat:@"%@", carid],@"car.id",
                          [NSString stringWithFormat:@"%@", user_id],@"member.id",
                          [NSString stringWithFormat:@"%@", begin],@"begin",
-                         [NSString stringWithFormat:@"%@", destination],@"end",
-                         [NSString stringWithFormat:@"%@", area],@"territoryId",
-                         [NSString stringWithFormat:@"%@", power],@"power",
-                         [NSString stringWithFormat:@"%@", theCarLatitude], @"carSPLatitude",
-                         [NSString stringWithFormat:@"%@", theCarLongitude],@"carSPLongitude",TokenPrams, nil];
+                         [NSString stringWithFormat:@"%@", area],@"territoryId", TokenPrams, nil];
     NSString *doVerifyurl=[NSString stringWithFormat:@"%@car/tCOrderController.do?doAdd", ServerURL];
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSDictionary *dic = parse.responseJsonOB;
@@ -70,7 +64,7 @@
     NSString *doVerifyurl = nil;
     NSString * yonghuID = [[NSUserDefaults standardUserDefaults]objectForKey:@"phone"];
     doVerifyurl = [NSString stringWithFormat:@"%@car/tCCarStatusController.do?%@", ServerURL,states];
-    dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%lf", userCoordinate.longitude], @"longitude", [NSString stringWithFormat:@"%lf", userCoordinate.latitude], @"latitude", orderStr, @"order", typeStr, @"type", page, @"page", yonghuID, @"phone", nil];
+    dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%lf", userCoordinate.longitude], @"longitude", [NSString stringWithFormat:@"%lf", userCoordinate.latitude], @"latitude", orderStr, @"order", typeStr, @"type", page, @"page", yonghuID, @"phone", @"2", @"buildId", nil];
     
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableArray *carAry = [[NSMutableArray alloc] init];
@@ -409,13 +403,12 @@
     NSDictionary *dic = nil;
     NSString *doVerifyurl = nil;
     NSString * yonghuID = [[NSUserDefaults standardUserDefaults] objectForKey:@"phone"];
-    if (isAll) {
-        doVerifyurl = [NSString stringWithFormat:@"%@car/tCCarStatusController.do?findAllBeiJingCar", ServerURL];
-        dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%lf", userCoordinate.longitude], @"longitude", [NSString stringWithFormat:@"%lf", userCoordinate.latitude], @"latitude", yonghuID, @"phone", nil];
-    } else {
-        dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%f", userCoordinate.longitude], @"longitude", [NSString stringWithFormat:@"%f", userCoordinate.latitude], @"latitude", [NSString stringWithFormat:@"%f", destination.longitude], @"Terminilongitude", [NSString stringWithFormat:@"%f", destination.latitude], @"Terminilatitude", yonghuID, @"phone", nil];
-        doVerifyurl = [NSString stringWithFormat:@"%@car/tCCarStatusController.do?findAreaCar", ServerURL];
-    }
+    doVerifyurl = [NSString stringWithFormat:@"%@car/tCCarStatusController.do?findAllBeiJingCar", ServerURL];
+    dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%lf", userCoordinate.longitude], @"longitude", [NSString stringWithFormat:@"%lf", userCoordinate.latitude], @"latitude", yonghuID, @"phone", nil];
+//    } else {
+//        dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%f", userCoordinate.longitude], @"longitude", [NSString stringWithFormat:@"%f", userCoordinate.latitude], @"latitude", [NSString stringWithFormat:@"%f", destination.longitude], @"Terminilongitude", [NSString stringWithFormat:@"%f", destination.latitude], @"Terminilatitude", yonghuID, @"phone", nil];
+//        doVerifyurl = [NSString stringWithFormat:@"%@car/tCCarStatusController.do?findAreaCar", ServerURL];
+//    }
     
     [KKHttpServices httpPostUrl:doVerifyurl prams:dic success:^(AFHTTPRequestOperation *operation, KKHttpParse *parse) {
         NSMutableArray *carAry = [[NSMutableArray alloc] init];

@@ -71,11 +71,12 @@
 
 - (void)setViewUI
 {
+     self.priceUnit = @"元";
     UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 64, kScreenW, 196 / 667.f * kScreenH)];
     priceLabel.font = [UIFont systemFontOfSize:55.f];
     priceLabel.textAlignment = NSTextAlignmentCenter;
     priceLabel.textColor = RedColor;
-    NSString * zongjia = [NSString stringWithFormat:@"%@%@", [ECarConfigs shareInstance].currentPrice, self.priceUnit];
+    NSString * zongjia = [NSString stringWithFormat:@"%.1f%@", [ECarConfigs shareInstance].currentPrice.doubleValue, self.priceUnit];
     NSMutableAttributedString * str = [[NSMutableAttributedString alloc] initWithString:zongjia];
     [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:24] range:NSMakeRange(str.length - self.priceUnit.length, self.priceUnit.length)];
     priceLabel.attributedText = str;
@@ -121,6 +122,12 @@
     [view1 addSubview:zfbLabel];
     [self.view addSubview:view1];
     [self.view addSubview:zhifubaoBtn];
+    
+    if (![WXApi isWXAppInstalled] || [ECarConfigs shareInstance].currentPrice.doubleValue > 3000) {
+        wxLabel.hidden = YES;
+        weixinBtn.hidden = YES;
+        view.hidden = YES;
+    }
 }
 
 - (void)zhifubaoSendPay
@@ -159,8 +166,7 @@
     order.productName = @"EZZY支付"; //商品标题
     order.productDescription = @"违章扣款费用"; // 商品描述
     order.amount = confige.currentPrice; // 商品价格
-    order.notifyURL = kZhiFuNotify; // 回调URL@"http://www.dreamers-makers.com"
-    PDLog(@"notifyURL    %@", kZhiFuNotify);
+    order.notifyURL = kZhiFuBuyMemNotify; // 回调URL@"http://www.dreamers-makers.com"
     order.service = @"mobile.securitypay.pay";
     order.paymentType = @"1";
     order.inputCharset = @"utf-8";
@@ -183,7 +189,7 @@
         [[AlipaySDK defaultService] payOrder:orderString fromScheme:appScheme callback:^(NSDictionary *resultDic) {
             NSString * resultStatus = [NSString stringWithFormat:@"%@", resultDic[@"resultStatus"]];
             if (resultStatus.integerValue == 9000 || resultStatus.integerValue == 8000) {
-                //                NSString * strTitle = [NSString stringWithFormat:@"支付结果"];
+//                NSString * strTitle = [NSString stringWithFormat:@"支付结果"];
                 NSString * strTitle = @"";
                 NSString * strMsg = @"";
                 if ([ECarConfigs shareInstance].zhifuwancheng == 10) {
@@ -205,6 +211,7 @@
 
 - (void)sendPaymeihoutai
 {
+    [ECarConfigs shareInstance].buyMemberNotify = 4444;
     [ECarConfigs shareInstance].zhifuwancheng = 10;
     [ECarSharedPriceModel sharedPriceModel].zhifufangshi = kZhiFuFangShiWeiXin;
     if (![WXApi isWXAppInstalled]) {

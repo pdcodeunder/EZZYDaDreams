@@ -14,4 +14,10 @@
 
 #import "Header.h"
 
+#define  KEY_USERNAME_PASSWORD @"com.company.app.usernamepassword"
+
+#define  KEY_USERNAME @"com.company.app.username"
+
+#define  KEY_PASSWORD @"com.company.app.password"
+
 #endif /* PrefixHeader_pch */

@@ -18,6 +18,7 @@
 @interface EZZYDrivingViewController : ECarBaseViewController
 
 @property (strong, nonatomic) ECarCarInfo *carInfo;
+@property (assign, nonatomic) id<EZZYDrivingViewControllerDelegate> drivingDelegate;
 @property (strong, nonatomic) NSArray *polyArray;
 
 - (void)checkLanYa;

@@ -10,6 +10,8 @@
 #import "ECarLoginRegisterManager.h"
 #import "ECarProViewController.h"
 #import "ECarUser.h"
+#import "PDUUID.h"
+
 @interface ECarLoginViewController ()
 {
     BOOL phoneValid;
@@ -19,6 +21,7 @@
 @end
 
 @implementation ECarLoginViewController
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [self.phoneNumber resignFirstResponder];
@@ -143,7 +146,7 @@
         [self delayHidHUD:@"请输入手机号"];
         return;
     }
-    NSString *identifierForDevice = [NSString stringWithFormat:@"%@", [UIDevice currentDevice].identifierForVendor.UUIDString];
+    NSString *identifierForDevice = [PDUUID getUUID];
     PDLog(@"identifierForDevice:;  %@", identifierForDevice);
     // 访问后台接口，传递参数，解析后台返回的JESON
     [self showHUD:@"登录中..."];
@@ -157,12 +160,13 @@
             [[NSUserDefaults standardUserDefaults] setObject:phoneNumber forKey:@"phone"];
             [[NSUserDefaults standardUserDefaults] setObject:code forKey:@"verifyCode"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"LoginFinished" object:nil];
             NSDictionary *objDic = responseJsonOB[@"obj"];
             ECarUser *user = [[ECarUser alloc] initWithResponse:objDic];
             [ECarConfigs shareInstance].user = user;
             NSNumber * phoneMsg = responseJsonOB[@"phoneMsg"];
-            if (phoneMsg.boolValue == 0) {
+            if (phoneMsg != nil && phoneMsg.boolValue == 0) {
                 NSDictionary * objNo2 = responseJsonOB[@"objNo2"];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"YouWeiWanChengDingDan" object:nil userInfo:objNo2];
             }
