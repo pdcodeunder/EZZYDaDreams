@@ -9,12 +9,14 @@
 #import "ECarAboutUsController.h"
 #import "ECarUser.h"
 #import "ECarUserManager.h"
+#import "YLLabel.h"
 
 @interface ECarAboutUsController () <UIAlertViewDelegate>
 //@property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic , strong)ECarUser * zz;
 @property (nonatomic , strong)ECarUserManager * manage;
 @property (nonatomic , strong)UITextView * textView;
+@property (nonatomic , strong)YLLabel * label;
 @end
 
 @implementation ECarAboutUsController
@@ -46,13 +48,14 @@
     [[_manage aboutUs] subscribeNext:^(id x) {
         NSDictionary * dic = x;
         [weakSelf hideHUD];
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        paragraphStyle.lineSpacing = 10;// 字体的行间距
-        NSDictionary *attributes = @{
-                                     NSFontAttributeName:FontType,
-                                     NSParagraphStyleAttributeName:paragraphStyle
-                                     };
-        _textView.attributedText = [[NSAttributedString alloc] initWithString:[dic objectForKey:@"phoneMsg"] attributes:attributes];
+        [self.label setText:dic[@"phoneMsg"]];
+//        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+//        paragraphStyle.lineSpacing = 10;// 字体的行间距
+//        NSDictionary *attributes = @{
+//                                     NSFontAttributeName:FontType,
+//                                     NSParagraphStyleAttributeName:paragraphStyle
+//                                     };
+//        _textView.attributedText = [[NSAttributedString alloc] initWithString:[dic objectForKey:@"phoneMsg"] attributes:attributes];
     } error:^(NSError *error) {
         [weakSelf hideHUD];
     } completed:^{
@@ -61,12 +64,20 @@
 }
 
 - (void)creatUI{
-    _textView = [[UITextView alloc]initWithFrame:CGRectMake(50 / 375.0 * kScreenW, 64 + 50 / 667.0 * kScreenH, kScreenW - 100 / 375.0 * kScreenW, kScreenH - 64 - 50 / 667.0 * kScreenH - 100 / 667.0 * kScreenH)];
-    _textView.backgroundColor = WhiteColor;
-    _textView.editable = NO;
-    _textView.scrollEnabled = NO;
     
-    [self.view addSubview:_textView];
+    YLLabel * label = [[YLLabel alloc]initWithFrame:CGRectMake(50 / 375.0 * kScreenW, 64 + 50 / 667.0 * kScreenH, kScreenW - 100 / 375.0 * kScreenW, kScreenH - 64 - 50 / 667.0 * kScreenH - 100 / 667.0 * kScreenH)];
+    label.backgroundColor = WhiteColor;
+    label.lineSpacing = 10.f;
+    label.font = FontType;
+    self.label = label;
+    [self.view addSubview:label];
+    
+//    _textView = [[UITextView alloc]initWithFrame:CGRectMake(50 / 375.0 * kScreenW, 64 + 50 / 667.0 * kScreenH, kScreenW - 100 / 375.0 * kScreenW, kScreenH - 64 - 50 / 667.0 * kScreenH - 100 / 667.0 * kScreenH)];
+//    _textView.backgroundColor = WhiteColor;
+//    _textView.editable = NO;
+//    _textView.scrollEnabled = NO;
+//    
+//    [self.view addSubview:_textView];
 }
 
 - (void)didReceiveMemoryWarning

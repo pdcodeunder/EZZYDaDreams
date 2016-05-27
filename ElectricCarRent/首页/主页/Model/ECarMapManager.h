@@ -30,19 +30,8 @@
  *
  *  @return subject
  */
-- (DSASubject *)createOrder:(NSString *)carid
-                     userID:(NSString *)user_id
-                      begin:(NSString *)begin
-                destination:(NSString *)destination
-                       area:(NSString *)area
-                      power:(NSString *)power
-                endLatitude:(NSString *)endPLatitude
-               endLongitude:(NSString *)endPLongitude
-               userLatitude:(NSString *)userSPLatitude
-              userLongitude:(NSString *)userSPLongitude
-             theCarLatitude:(NSString *)theCarLatitude
-            theCarLongitude:(NSString *)theCarLongitude
-             andCarLocation:(NSString *)carLocation;
+- (DSASubject *)createOrder:(NSString *)carid userID:(NSString *)user_id begin:(NSString *)begin area:(NSString *)area userLatitude:(NSString *)userSPLatitude userLongitude:(NSString *)userSPLongitude;
+
 /**
     订单列表
  */

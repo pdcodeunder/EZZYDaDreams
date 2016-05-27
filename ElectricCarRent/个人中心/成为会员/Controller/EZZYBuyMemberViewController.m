@@ -7,15 +7,21 @@
 //
 
 #import "EZZYBuyMemberViewController.h"
-#import "ECarZhiFuViewController.h"
+#import "EZZYMemberZhiFuViewController.h"
 #import "EZZYMemberModle.h"
 #import "ECarConfigs.h"
 #import "ECarUserManager.h"
+#import "EZZYOnSaleMemberModel.h"
+#import "EZZYBuyMemberTableViewCell.h"
+#import "YLLabel.h"
 
-@interface EZZYBuyMemberViewController ()
+@interface EZZYBuyMemberViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) EZZYMemberModle *modle;
 @property (nonatomic, strong) ECarUserManager *useManager;
+@property (nonatomic, strong) EZZYOnSaleMemberModel *selectedModel;
+@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) UITextView *textViewd;
 
 @end
 
@@ -40,7 +46,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.selectedModel = [self.modle.subModels objectAtIndex:0];
     self.title = self.modle.levelName;
     [self createMemberUI];
 }
@@ -48,9 +55,11 @@
 - (void)createMemberUI
 {
     // 添加会员文案描述
-    UITextView * textView = [[UITextView alloc] initWithFrame:CGRectMake(23, 80 / 667.f * kScreenH, kScreenW - 46, kScreenH - 100 / 667.f * kScreenH)];
+    UITextView * textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, kScreenW, kScreenH - 100 / 667.f * kScreenH)];
     textView.font = FontType;
     textView.backgroundColor = [UIColor clearColor];
+    CGSize size = [ToolKit getSizeByFont:FontType labelWidth:kScreenW - 45 message:self.modle.note];
+    textView.height = size.height + 10 * (size.height / (15 / 667.0 * kScreenH)) + 110;
     textView.selectable = NO;
     textView.editable = NO;
     textView.text = self.modle.note;
@@ -62,7 +71,18 @@
                                  NSParagraphStyleAttributeName:paragraphStyle
                                  };
     textView.attributedText = [[NSAttributedString alloc] initWithString:textView.text attributes:attributes];
-    [self.view addSubview:textView];
+    textView.textContainerInset = UIEdgeInsetsMake(55, 20, 0, 20);
+    self.textViewd = textView;
+    
+    UITableView *table = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, kScreenW, kScreenH - 64 - 49) style:UITableViewStylePlain];
+    table.backgroundView.backgroundColor = WhiteColor;
+    table.backgroundColor = WhiteColor;
+    table.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenW, 2)];
+    table.delegate = self;
+    table.dataSource = self;
+    [self.view addSubview:table];
+    self.tableView = table;
+    
     // 购买按钮
     UIButton * buyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [buyBtn setTitleColor:[UIColor colorWithRed:224/255.0f green:54/255.0f blue:134/255.0f alpha:1.0f] forState:UIControlStateNormal];
@@ -71,9 +91,10 @@
     buyBtn.frame = CGRectMake(0, kScreenH - 49, kScreenW, 49);
     [buyBtn addTarget:self action:@selector(buyBtnAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:buyBtn];
+    
     // 添加下面的线
-    UIView * lineView1 = [[UIView alloc]initWithFrame:CGRectMake(0, kScreenH - 49, kScreenW , 1)];
-    lineView1.backgroundColor = [UIColor colorWithRed:197/255.0 green:197/255.0 blue:197/255.0 alpha:1.0];
+    UIView * lineView1 = [[UIView alloc] initWithFrame:CGRectMake(0, kScreenH - 49, kScreenW , 1)];
+    lineView1.backgroundColor = [UIColor colorWithRed:197 / 255.0 green:197/255.0 blue:197/255.0 alpha:1.0];
     [self.view addSubview:lineView1];
 }
 
@@ -81,8 +102,8 @@
 {
     [self showHUD:@"请稍等..."];
     weak_Self(self);
-    ECarZhiFuViewController * zhifuVC = [[ECarZhiFuViewController alloc] init];
-    [[self.useManager creatOrderByRenyuanID:[ECarConfigs shareInstance].user.phone vipType:self.modle.levelCode lastNum:@"10"] subscribeNext:^(id x) {
+    EZZYMemberZhiFuViewController * zhifuVC = [[EZZYMemberZhiFuViewController alloc] init];
+    [[self.useManager creatOrderByRenyuanID:[ECarConfigs shareInstance].user.phone vipType:self.selectedModel.levelCode lastNum:@"10"] subscribeNext:^(id x) {
         [weakSelf hideHUD];
         NSDictionary * dic = x;
         NSString * success = [NSString stringWithFormat:@"%@", dic[@"success"]];
@@ -95,17 +116,60 @@
         NSDictionary * dictx = dic[@"obj"];
         ECarConfigs * config = [ECarConfigs shareInstance];
         config.orignOrderNo = [NSString stringWithFormat:@"%@", [dictx objectForKey:@"orderId"]];
-        config.currentPrice = [NSString stringWithFormat:@"%.2lf", weakSelf.modle.levelMoney.floatValue];
-        
-        zhifuVC.priceCar = [NSString stringWithFormat:@"%@", weakSelf.modle.levelMoney];
-        zhifuVC.priceUnit = self.modle.levelUnit;
-        zhifuVC.orderID = dictx[@"orderId"];
-        zhifuVC.canBack = YES;
-        zhifuVC.sendType = sendToHouTaiByVip;
+        config.currentPrice = [NSString stringWithFormat:@"%.2lf", weakSelf.selectedModel.xianjia.floatValue];
+        zhifuVC.priceUnit = @"元";
         [self.navigationController pushViewController:zhifuVC animated:YES];
     } error:^(NSError *error) {
         [weakSelf delayHidHUD:MESSAGE_NoNetwork];
     }];
+}
+
+// tableViewDelegate
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.modle.subModels.count + 1;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row < self.modle.subModels.count) {
+        return 55 / 667.0 * kScreenH;
+    }
+    return self.textViewd.height;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row < self.modle.subModels.count) {
+        EZZYBuyMemberTableViewCell *cell = [EZZYBuyMemberTableViewCell createTableViewCellWithTableView:tableView];
+        EZZYOnSaleMemberModel *onSaleModel = [self.modle.subModels objectAtIndex:indexPath.row];
+        [cell refreshCellViewWithModel:onSaleModel];
+        if (onSaleModel == self.selectedModel) {
+            cell.selectStatus = YES;
+        } else {
+            cell.selectStatus = NO;
+        }
+        return cell;
+    }
+    UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"efddsadsdaffdsaf"];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"efddsadsdaffdsaf"];
+        cell.contentView.backgroundColor = WhiteColor;
+        cell.backgroundColor = WhiteColor;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    [cell.contentView addSubview:self.textViewd];
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+    if (indexPath.row < self.modle.subModels.count) {
+        EZZYOnSaleMemberModel *onSaleModel = [self.modle.subModels objectAtIndex:indexPath.row];
+        self.selectedModel = onSaleModel;
+        [tableView reloadData];
+    }
 }
 
 @end

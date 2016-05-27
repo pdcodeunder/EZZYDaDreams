@@ -41,13 +41,16 @@
 
 // 导航
 #import "ECarMapNaviViewController.h"
-#import "ECarDrivingViewController.h"
+//#import "ECarDrivingViewController.h"
+#import "EZZYDrivingViewController.h"
 
 // 支付
 #import "ECarZhiFuViewController.h"
 #import "ECarZhiFuWanChengViewController.h"
 
 #import "ECarGPSChange.h"
+
+#import "PDUUID.h"
 
 #define kPickterSalus 0.0124374
 #define BTNCOLOR [UIColor colorWithRed:220.f/250 green:50.f/250 blue:130.f/250 alpha:1]
@@ -73,10 +76,10 @@ typedef NS_ENUM(NSInteger, PopoverAlert)
 
 typedef void (^BookCarBlock)(id model);
 
-@interface ECarMainViewController () <MAMapViewDelegate, AMapNaviManagerDelegate, IFlySpeechSynthesizerDelegate, ECarOrderViewControllerDelegate, ECarMyCenterViewControllerDelegate, AMapNaviViewControllerDelegate, UIAlertViewDelegate, UIScrollViewDelegate, ECarDrivingViewControllerDelegate, ECarMapNaviViewControllerDelegate>
+@interface ECarMainViewController () <MAMapViewDelegate, AMapNaviManagerDelegate,EZZYDrivingViewControllerDelegate, IFlySpeechSynthesizerDelegate, ECarOrderViewControllerDelegate, ECarMyCenterViewControllerDelegate, AMapNaviViewControllerDelegate, UIAlertViewDelegate, UIScrollViewDelegate, ECarMapNaviViewControllerDelegate>
 
 // UI
-@property (strong, nonatomic) UILabel               * mudiLabel;
+//@property (strong, nonatomic) UILabel               * mudiLabel;
 @property (nonatomic, strong) MAMapView             * mapView;          // 地图
 @property (strong, nonatomic) ECarCarDetailView     * detailView;       // 车辆信息气泡
 @property (strong, nonatomic) UIView                * bottomView;       // 估计价格底部view
@@ -122,7 +125,7 @@ typedef void (^BookCarBlock)(id model);
 // 语音导航
 @property (nonatomic, strong) IFlySpeechSynthesizer         * iFlySpeechSynthesizer;    // 语音
 @property (nonatomic, strong) ECarMapNaviViewController     * warkingNaviewContoller;   // 步行导航
-@property (nonatomic, strong) ECarDrivingViewController     * dringNaviViewController;  // 行车导航
+//@property (nonatomic, strong) ECarDrivingViewController     * dringNaviViewController;  // 行车导航
 @property (nonatomic, strong) AMapNaviPoint                 * startPoint;               // 导航起点
 @property (nonatomic, strong) AMapNaviPoint                 * endPoint;                 // 导航终点
 @property (nonatomic, assign) NavManagerTravelType            navManagerTravelType;     // 导航判断是驾车还是步行
@@ -131,7 +134,7 @@ typedef void (^BookCarBlock)(id model);
 
 @property (nonatomic, assign) ECarConfigs                   * config;
 // 支付
-@property (nonatomic, strong) ECarZhiFuViewController       * zhifu;                    // 支付页面
+//@property (nonatomic, strong) ECarZhiFuViewController       * zhifu;                    // 支付页面
 
 @end
 
@@ -212,10 +215,6 @@ typedef void (^BookCarBlock)(id model);
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (_zhifu) {
-        [_zhifu.view removeFromSuperview];
-        _zhifu = nil;
-    }
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     if (_detailView && _hiddenDetailView == NO) {
         [self detailViewHidde:YES];
@@ -252,7 +251,7 @@ typedef void (^BookCarBlock)(id model);
 
 - (void)detailViewHidde:(BOOL)hide
 {
-    if (hide || self.bottomView.hidden == NO) {
+    if (hide) {
         [UIView animateWithDuration:0.3 animations:^{
             self.detailView.frame = CGRectMake(0, kScreenH, kScreenW, kScreenH - 235.f / 667.f * kScreenH);
         }];
@@ -371,7 +370,8 @@ typedef void (^BookCarBlock)(id model);
     ECarCarInfo *ecarInfo = model;
     ECarUser *userInfo = self.config.user;
     self.config.currentCarID = ecarInfo.carid;
-    [[weakSelf.manager createOrder:ecarInfo.carid userID:userInfo.user_id begin:self.currentRoadInfo destination:self.userDestitation.name area:@"beijing" power:@"pd" endLatitude:FloatToString(self.userDestitation.location.latitude) endLongitude:FloatToString(self.userDestitation.location.longitude) userLatitude:FloatToString(userCoordinate.latitude) userLongitude:FloatToString(userCoordinate.longitude) theCarLatitude:self.carInfo.carLatitude theCarLongitude:self.carInfo.carlongitude andCarLocation:self.carInfo.locationName] subscribeNext:^(id x) {
+    
+    [[self.manager createOrder:ecarInfo.carid userID:userInfo.user_id begin:self.currentRoadInfo area:@"beijing" userLatitude:FloatToString(userCoordinate.latitude) userLongitude:FloatToString(userCoordinate.longitude)] subscribeNext:^(id x) {
         NSDictionary * dic = x;
         NSString *order = dic[@"obj"];
         NSDictionary * attributes = dic[@"attributes"];
@@ -415,12 +415,13 @@ typedef void (^BookCarBlock)(id model);
 #pragma mark - 一些必要初始化
 - (void)chushihua
 {
+    self.userDestitation = [[AMapPOI alloc] init];
+    self.userDestitation.location = [AMapGeoPoint locationWithLatitude:39.90815613 longitude:116.3973999];
     self.persentNav = NO;
     self.navManagerTravelType = NavManagerTravelTypeDefault;
     _isWalkingNav = NO;
     self.manager = [ECarMapManager new];
     self.annotationAry = [[NSMutableArray alloc] init];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationClicked) name:@"zhifuwancheng" object:nil];
     _isFirst = YES;
     self.navigationController.navigationBar.hidden = YES;
     self.automaticallyAdjustsScrollViewInsets = NO;
@@ -439,16 +440,6 @@ typedef void (^BookCarBlock)(id model);
     };
 }
 
-- (void)notificationClicked
-{
-    if (_zhifu) {
-        [_zhifu.view removeFromSuperview];
-        _zhifu = nil;
-        ECarZhiFuWanChengViewController * zhifuwancheng = [[ECarZhiFuWanChengViewController alloc] init];
-        [self.navigationController pushViewController:zhifuwancheng animated:NO];
-    }
-}
-
 #pragma mark - 自动登录
 - (void)autoLogin
 {
@@ -457,8 +448,11 @@ typedef void (^BookCarBlock)(id model);
     if (phone.length == 0||code.length == 0) {
         return;
     }
+    self.config.loginStatue = YES;
+    [ECarConfigs shareInstance].user.phone = phone;
+    NSString *identifierForDevice = [PDUUID getUUID];
     // 网络请求
-    [[[ECarLoginRegisterManager new] apploginWithPhone:phone pwd:code] subscribeNext:^(id x) {
+    [[[ECarLoginRegisterManager new] apploginWithPhone:phone pwd:code andUUID:identifierForDevice] subscribeNext:^(id x) {
         NSMutableDictionary *responseJsonOB = x;
         NSNumber *value = [responseJsonOB objectForKey:@"success"];
         // 去主页面
@@ -469,14 +463,21 @@ typedef void (^BookCarBlock)(id model);
             ECarUser *user = [[ECarUser alloc] initWithResponse:objDic];
             self.config.user = user;
             NSNumber * phoneMsg = responseJsonOB[@"phoneMsg"];
-            if (phoneMsg.boolValue == 0) {
+            if (phoneMsg != nil && phoneMsg.boolValue == 0) {
                 NSDictionary * objNo2 = responseJsonOB[@"objNo2"];
+                PDLog(@"objNo2objNo2 :  %@", objNo2);
                 self.dingdanDic = objNo2;
                 UIAlertView * alerview = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您有未完成的订单，是否继续？" delegate:self cancelButtonTitle:@"是" otherButtonTitles:@"否", nil];
                 alerview.tag = AlertTagWeiWanChengDingDan;
                 [alerview show];
             }
             self.config.loginStatue = YES;
+        } else {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"phone"];
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"verifyCode"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            _config.loginStatue = NO;
+            [ECarConfigs shareInstance].user.phone = @"";
         }
     } error:^(NSError *error) {
     } completed:^{
@@ -729,7 +730,7 @@ typedef void (^BookCarBlock)(id model);
     NSString *initString = [[NSString alloc] initWithFormat:@"appid=%@,timeout=%@",@"561f5c54",@"20000"];
     [IFlySpeechUtility createUtility:initString];
     [self.iFlySpeechSynthesizer setParameter:@"50" forKey:@"speed"];
-    [self.iFlySpeechSynthesizer setParameter:@"50" forKey:@"volume"];
+    [self.iFlySpeechSynthesizer setParameter:@"100" forKey:@"volume"];
 }
 
 #pragma mark 图片覆盖物显示
@@ -810,118 +811,120 @@ typedef void (^BookCarBlock)(id model);
 - (void)create3UI
 {
     // 底部view
-    UIView * bottomView = [[UIView alloc] initWithFrame:CGRectMake(50 / 375.f * kScreenW, kScreenH - 108, kScreenW - 100 / 375.f * kScreenW, 90)];
+    UIView * bottomView = [[UIView alloc] initWithFrame:CGRectMake(56 / 375.f * kScreenW, 0, kScreenW - 112 / 375.f * kScreenW, 45 / 667.0 * kScreenH)];
+    bottomView.bottom = kScreenH - 22;
     UIImageView * dituImage = [[UIImageView alloc] initWithFrame:bottomView.bounds];
-    dituImage.image = [UIImage imageNamed:@"di273*89"];
-    bottomView.alpha = 0.8f;
+    dituImage.image = [UIImage imageNamed:@"shouyebutton"];
+//    bottomView.alpha = 0.8f;
     [bottomView addSubview:dituImage];
     
     [self.view addSubview:bottomView];
-    UIImageView * sousuoImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 21, 21)];
-    sousuoImage.center = CGPointMake(28, 22);
-    sousuoImage.image = [UIImage imageNamed:@"sousuohuise21*21"];
-    [bottomView addSubview:sousuoImage];
+    
+//    UIImageView * sousuoImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 21, 21)];
+//    sousuoImage.center = CGPointMake(28, 22);
+//    sousuoImage.image = [UIImage imageNamed:@"sousuohuise21*21"];
+//    [bottomView addSubview:sousuoImage];
     
     // 目的地输入框
-    self.mudiLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(sousuoImage.frame) + 7, 0, bottomView.bounds.size.width - CGRectGetMaxX(sousuoImage.frame) - 7, 45)];
-    self.mudiLabel.textColor = GrayColor;
-    self.mudiLabel.text = @"输入目的地";
-    self.mudiLabel.font = FontType;
-    [bottomView addSubview:self.mudiLabel];
-    UIButton * mudiButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    mudiButton.frame = CGRectMake(0, 0, kScreenW - 30, 49);
-    [mudiButton addTarget:self action:@selector(mudidiButtonCliecked:) forControlEvents:UIControlEventTouchUpInside];
-    [bottomView addSubview:mudiButton];
+//    self.mudiLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(sousuoImage.frame) + 7, 0, bottomView.bounds.size.width - CGRectGetMaxX(sousuoImage.frame) - 7, 45)];
+//    self.mudiLabel.textColor = GrayColor;
+//    self.mudiLabel.text = @"输入目的地";
+//    self.mudiLabel.font = FontType;
+//    [bottomView addSubview:self.mudiLabel];
+//    UIButton * mudiButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    mudiButton.frame = CGRectMake(0, 0, kScreenW - 30, 49);
+//    [mudiButton addTarget:self action:@selector(mudidiButtonCliecked:) forControlEvents:UIControlEventTouchUpInside];
+//    [bottomView addSubview:mudiButton];
     
     // 底部button
     CGFloat w = bottomView.bounds.size.width;
     
     UIButton * luopanButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    luopanButton.frame = CGRectMake(bottomView.frame.origin.x, bottomView.frame.origin.y + 45, w / 4.f, 45);
-    [luopanButton setImage:[UIImage imageNamed:@"guiwei30*30"] forState:UIControlStateNormal];
+    luopanButton.frame = CGRectMake(bottomView.frame.origin.x, bottomView.frame.origin.y, w / 4.f, bottomView.height);
+    [luopanButton setImage:[UIImage imageNamed:@"yuandian"] forState:UIControlStateNormal];
     [luopanButton addTarget:self action:@selector(luoPanButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:luopanButton];
     
     // 车辆列表
     UIButton * qicheliebiao = [UIButton buttonWithType:UIButtonTypeCustom];
-    qicheliebiao.frame = CGRectMake(bottomView.frame.origin.x + w / 4.f, bottomView.frame.origin.y + 45, w / 4.f, 45);
-    [qicheliebiao setImage:[UIImage imageNamed:@"cheliangliebiao30*30"] forState:UIControlStateNormal];
+    qicheliebiao.frame = CGRectMake(bottomView.frame.origin.x + w / 4.f, bottomView.frame.origin.y, w / 4.f, bottomView.height);
+    [qicheliebiao setImage:[UIImage imageNamed:@"liebiao"] forState:UIControlStateNormal];
     [qicheliebiao addTarget:self action:@selector(rightClick) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:qicheliebiao];
     
     // 我的行程
     UIButton * songche = [UIButton buttonWithType:UIButtonTypeCustom];
-    songche.frame = CGRectMake(bottomView.frame.origin.x + w / 2.f, bottomView.frame.origin.y + 45, w / 4.f, 45);
-    [songche setImage:[UIImage imageNamed:@"wodexingcheng30*30"] forState:UIControlStateNormal];
+    songche.frame = CGRectMake(bottomView.frame.origin.x + w / 2.f, bottomView.frame.origin.y, w / 4.f, bottomView.height);
+    [songche setImage:[UIImage imageNamed:@"yunyingqushouye"] forState:UIControlStateNormal];
     [songche addTarget:self action:@selector(wodeXingChengClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:songche];
     
     // 个人中心首页
     UIButton * youhui = [UIButton buttonWithType:UIButtonTypeCustom];
-    youhui.frame = CGRectMake(bottomView.frame.origin.x + w / 4.f * 3, bottomView.frame.origin.y + 45, w / 4.f, 45);
-    [youhui setImage:[UIImage imageNamed:@"caidan30*30"] forState:UIControlStateNormal];
+    youhui.frame = CGRectMake(bottomView.frame.origin.x + w / 4.f * 3, bottomView.frame.origin.y, w / 4.f, bottomView.height);
+    [youhui setImage:[UIImage imageNamed:@"wode"] forState:UIControlStateNormal];
     [youhui addTarget:self action:@selector(leftClick) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:youhui];
     
-    [self createGuJiFeiYong];
+//    [self createGuJiFeiYong];
     
     [self.timeView addSubview:self.timeLabel];
     [self.view addSubview:self.timeView];
 }
 
 #pragma mark - 估计价格界面view
-- (void)createGuJiFeiYong
-{
-    self.bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 356 / 375.f * kScreenW, 214 / 667.f * kScreenH)];
-    self.bottomView.center = CGPointMake(kScreenW / 2.f, 549.f / 667.f * kScreenH);
-    self.bottomView.backgroundColor = WhiteColor;
-    self.bottomView.hidden = YES;
-    [self.view addSubview:self.bottomView];
-    
-    UIImageView * botImage = [[UIImageView alloc] initWithFrame:self.bottomView.bounds];
-    botImage.image = [UIImage imageNamed:@"yugujiage356*214"];
-    [self.bottomView addSubview:botImage];
-    
-    self.startLabel = [[UILabel alloc] initWithFrame:CGRectMake(27 / 375.f * kScreenW, 0, self.bottomView.bounds.size.width - 27 / 375.f * kScreenW, 51.f / 667.f * kScreenH)];
-    self.startLabel.font = [UIFont systemFontOfSize:14];
-    [self.bottomView addSubview:self.startLabel];
-    
-    UIButton * gfmudiBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    gfmudiBtn.frame = CGRectMake(27 / 375.f * kScreenW, CGRectGetMaxY(self.startLabel.frame), self.bottomView.bounds.size.width - 27 / 375.f * kScreenW, 51.f / 667.f * kScreenH);
-    [gfmudiBtn addTarget:self action:@selector(mudidiClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [self.bottomView addSubview:gfmudiBtn];
-    
-    self.mdLabel = [[UILabel alloc] initWithFrame:gfmudiBtn.frame];
-    self.mdLabel.font = [UIFont systemFontOfSize:14];
-    [self.bottomView addSubview:self.mdLabel];
-    
-    UIButton * gjFyButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    gjFyButton.frame = CGRectMake(0, CGRectGetMaxY(gfmudiBtn.frame), self.bottomView.bounds.size.width, 66.f / 667.f * kScreenH);
-    [gjFyButton addTarget:self action:@selector(gujifeiyongButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-    gjFyButton.enabled = NO;
-    [self.bottomView addSubview:gjFyButton];
-    self.gjFyBtn = gjFyButton;
-    
-    self.fyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(gfmudiBtn.frame), self.bottomView.bounds.size.width, 66.f / 667.f * kScreenH)];
-    self.fyLabel.font = [UIFont systemFontOfSize:14];
-    self.fyLabel.textAlignment = NSTextAlignmentCenter;
-    [self.bottomView addSubview:self.fyLabel];
-    
-    UIButton * shiyongBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    shiyongBtn.frame = CGRectMake(0, CGRectGetMaxY(self.fyLabel.frame), self.bottomView.bounds.size.width / 2.f, 49.f / 667.f * kScreenH);
-    [shiyongBtn addTarget:self action:@selector(shiYongButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [self.bottomView addSubview:shiyongBtn];
-    
-    UIButton * quXiaoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    quXiaoBtn.frame = CGRectMake(self.bottomView.bounds.size.width / 2.f, CGRectGetMaxY(self.fyLabel.frame), self.bottomView.bounds.size.width / 2.f, 49.f / 667.f * kScreenH);
-    [quXiaoBtn addTarget:self action:@selector(quxiaoButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [self.bottomView addSubview:quXiaoBtn];
-}
-
-- (void)gujifeiyongButtonClicked:(UIButton *)sender
-{
-    [self creatJiagemingxiView];
-}
+//- (void)createGuJiFeiYong
+//{
+//    self.bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 356 / 375.f * kScreenW, 214 / 667.f * kScreenH)];
+//    self.bottomView.center = CGPointMake(kScreenW / 2.f, 549.f / 667.f * kScreenH);
+//    self.bottomView.backgroundColor = WhiteColor;
+//    self.bottomView.hidden = YES;
+//    [self.view addSubview:self.bottomView];
+//    
+//    UIImageView * botImage = [[UIImageView alloc] initWithFrame:self.bottomView.bounds];
+//    botImage.image = [UIImage imageNamed:@"yugujiage356*214"];
+//    [self.bottomView addSubview:botImage];
+//    
+//    self.startLabel = [[UILabel alloc] initWithFrame:CGRectMake(27 / 375.f * kScreenW, 0, self.bottomView.bounds.size.width - 27 / 375.f * kScreenW, 51.f / 667.f * kScreenH)];
+//    self.startLabel.font = [UIFont systemFontOfSize:14];
+//    [self.bottomView addSubview:self.startLabel];
+//    
+//    UIButton * gfmudiBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//    gfmudiBtn.frame = CGRectMake(27 / 375.f * kScreenW, CGRectGetMaxY(self.startLabel.frame), self.bottomView.bounds.size.width - 27 / 375.f * kScreenW, 51.f / 667.f * kScreenH);
+//    [gfmudiBtn addTarget:self action:@selector(mudidiClicked:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.bottomView addSubview:gfmudiBtn];
+//    
+//    self.mdLabel = [[UILabel alloc] initWithFrame:gfmudiBtn.frame];
+//    self.mdLabel.font = [UIFont systemFontOfSize:14];
+//    [self.bottomView addSubview:self.mdLabel];
+//    
+//    UIButton * gjFyButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    gjFyButton.frame = CGRectMake(0, CGRectGetMaxY(gfmudiBtn.frame), self.bottomView.bounds.size.width, 66.f / 667.f * kScreenH);
+//    [gjFyButton addTarget:self action:@selector(gujifeiyongButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+//    gjFyButton.enabled = NO;
+//    [self.bottomView addSubview:gjFyButton];
+//    self.gjFyBtn = gjFyButton;
+//    
+//    self.fyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(gfmudiBtn.frame), self.bottomView.bounds.size.width, 66.f / 667.f * kScreenH)];
+//    self.fyLabel.font = [UIFont systemFontOfSize:14];
+//    self.fyLabel.textAlignment = NSTextAlignmentCenter;
+//    [self.bottomView addSubview:self.fyLabel];
+//    
+//    UIButton * shiyongBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//    shiyongBtn.frame = CGRectMake(0, CGRectGetMaxY(self.fyLabel.frame), self.bottomView.bounds.size.width / 2.f, 49.f / 667.f * kScreenH);
+//    [shiyongBtn addTarget:self action:@selector(shiYongButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.bottomView addSubview:shiyongBtn];
+//    
+//    UIButton * quXiaoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//    quXiaoBtn.frame = CGRectMake(self.bottomView.bounds.size.width / 2.f, CGRectGetMaxY(self.fyLabel.frame), self.bottomView.bounds.size.width / 2.f, 49.f / 667.f * kScreenH);
+//    [quXiaoBtn addTarget:self action:@selector(quxiaoButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.bottomView addSubview:quXiaoBtn];
+//}
+//
+//- (void)gujifeiyongButtonClicked:(UIButton *)sender
+//{
+//    [self creatJiagemingxiView];
+//}
 
 // 价格明细方法
 - (void)creatJiagemingxiView {
@@ -935,19 +938,19 @@ typedef void (^BookCarBlock)(id model);
     [self.view addSubview:jiaVC.view];
 }
 
-- (void)mudidiClicked:(UIButton *)sender
-{
-    weak_Self(self);
-    ECarInputViewController * destinationVC = [[ECarInputViewController alloc] init];
-    destinationVC.destinationBlock = ^(AMapPOI *poi){
-        weakSelf.userDestitation = poi;
-        weakSelf.mudiLabel.text = poi.name;
-        weakSelf.mdLabel.text = poi.name;
-        [weakSelf getGujiFeiYong];
-    };
-    destinationVC.currentPOI = self.userDestitation;
-    [self.navigationController pushViewController:destinationVC animated:YES];
-}
+//- (void)mudidiClicked:(UIButton *)sender
+//{
+//    weak_Self(self);
+//    ECarInputViewController * destinationVC = [[ECarInputViewController alloc] init];
+//    destinationVC.destinationBlock = ^(AMapPOI *poi){
+//        weakSelf.userDestitation = poi;
+//        weakSelf.mudiLabel.text = poi.name;
+//        weakSelf.mdLabel.text = poi.name;
+//        [weakSelf getGujiFeiYong];
+//    };
+//    destinationVC.currentPOI = self.userDestitation;
+//    [self.navigationController pushViewController:destinationVC animated:YES];
+//}
 
 - (void)quxiaoButtonClicked:(UIButton *)sender
 {
@@ -1013,7 +1016,6 @@ typedef void (^BookCarBlock)(id model);
             return ;
         }
         NSString * obj2 = [NSString stringWithFormat:@"%@", dic[@"objNo2"]];
-        PDLog(@"safdewe    %@", dic);
         if (!obj2.boolValue) {
             NSString * zongjia = [NSString stringWithFormat:@"约%@元", [weakSelf.gujiDictionary objectForKey:@"zongjia"]];
             NSMutableAttributedString * str = [[NSMutableAttributedString alloc] initWithString:zongjia];
@@ -1037,6 +1039,11 @@ typedef void (^BookCarBlock)(id model);
 // 我的行程点击事件
 - (void)wodeXingChengClicked:(UIButton *)sender
 {
+//    EZZYDrivingViewController *drivingViewController = [[EZZYDrivingViewController alloc] init];
+//    drivingViewController.polyArray = self.polyArray;
+//    [self.navigationController pushViewController:drivingViewController animated:YES];
+//    return;
+    
     self.polyBool = !self.polyBool;
     if (self.polyBool) {
         [self.mapView removeOverlays:self.polyArray];
@@ -1065,7 +1072,7 @@ typedef void (^BookCarBlock)(id model);
 // 输入目的地点击事件
 - (void)mudidiButtonCliecked:(UIButton *)sender
 {
-    [self sousuoliebiao];
+//    [self sousuoliebiao];
 }
 
 // 电子罗盘归位点击事件
@@ -1131,16 +1138,17 @@ typedef void (^BookCarBlock)(id model);
 
 - (void)leftClick
 {
-    if (self.config.loginStatue)
-    {
+    NSString *phone = [[NSUserDefaults standardUserDefaults] objectForKey:@"phone"];
+    NSString *code = [[NSUserDefaults standardUserDefaults] objectForKey:@"verifyCode"];
+    if (phone.length != 0||code.length != 0) {
         self.myCenter = [[ECarMyCenterViewController alloc] init];
+        [ECarConfigs shareInstance].TokenID = code;
         self.myCenter.myCenterViewDelegate = self;
         UINavigationController * nv = [[UINavigationController alloc] initWithRootViewController:self.myCenter];
         [self.navigationController presentViewController:nv animated:NO completion:^{
             
         }];
-    }
-    else {
+    } else {
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"ECarLogin" bundle:[NSBundle mainBundle]];
         UIViewController *controller = (UIViewController *)[storyboard instantiateInitialViewController];
         [self.navigationController presentViewController:controller animated:NO completion:nil];
@@ -1174,7 +1182,7 @@ typedef void (^BookCarBlock)(id model);
             login.huidiaoBlock = ^(id model, ECarUser * user){
                 if (![weakSelf checkUserInfoWithUser:user]) return;
                 weakSelf.selectCar = model;
-                [weakSelf setShiYongButtonHiddenNo];
+//                [weakSelf setShiYongButtonHiddenNo];
             };
             [weakSelf.navigationController presentViewController:loginVC animated:NO completion:nil];
             return;
@@ -1182,7 +1190,8 @@ typedef void (^BookCarBlock)(id model);
             ECarUser *user = self.config.user;
             if (![weakSelf checkUserInfoWithUser:user]) return;
             weakSelf.selectCar = model;
-            [weakSelf setShiYongButtonHiddenNo];
+            [weakSelf shiYongButtonClicked:nil];
+//            [weakSelf setShiYongButtonHiddenNo];
         }
     }];
 }
@@ -1218,7 +1227,7 @@ typedef void (^BookCarBlock)(id model);
 #pragma mark - 检测用户及车辆状态
 - (BOOL)checkUserInfoWithUser:(ECarUser *)user
 {
-    BOOL success = NO;
+//    BOOL success = NO;
 //    if ([user.islock isEqualToString:@"1"]) {
 //        UIAlertView *alertV = [[UIAlertView alloc] initWithTitle:@"锁定" message:@"用户状态被锁定，如有疑问，请联系客服：400-6507265。" delegate:nil cancelButtonTitle:@"确认" otherButtonTitles:nil];
 //        [alertV show];
@@ -1241,14 +1250,14 @@ typedef void (^BookCarBlock)(id model);
 //        [alertV show];
 //        return success;
 //    }
-    if ([self.mudiLabel.text isEqualToString:@"输入目的地"])
-    {
-        UIAlertView *alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入目的地，以便为您匹配合适的车辆" delegate:self cancelButtonTitle:@"确认" otherButtonTitles:nil];
-        alertV.tag = AlertTagShuRuMuDiDi;
-        self.carListStatue = YES;
-        [alertV show];
-        return success;
-    }
+//    if ([self.mudiLabel.text isEqualToString:@"输入目的地"])
+//    {
+//        UIAlertView *alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入目的地，以便为您匹配合适的车辆" delegate:self cancelButtonTitle:@"确认" otherButtonTitles:nil];
+//        alertV.tag = AlertTagShuRuMuDiDi;
+//        self.carListStatue = YES;
+//        [alertV show];
+//        return success;
+//    }
     return YES;
 }
 
@@ -1420,32 +1429,46 @@ typedef void (^BookCarBlock)(id model);
     self.persentNav = NO;
     // 退出导航界面后恢复地图的状态
     if (self.config.exitTag == ExitNaviTagOpenLockSuccess) {
+        [self delayHidHUD:@"正在计算价格"];
         //开锁成之后出现行车导航按钮
-        [self drivingNavi];
+        [self ezzyDrivingCar];
     }
 }
 
-#pragma mark 行车导航
-- (void)drivingNavi
+//#pragma mark 行车导航
+//- (void)drivingNavi
+//{
+//    self.dringNaviViewController = [[ECarDrivingViewController alloc]
+//                                    initWithDelegate:self];
+//    CLLocationCoordinate2D userCoordinate = self.config.userCoordinate;
+//    self.startPoint = [AMapNaviPoint locationWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude];
+//    self.endPoint = [AMapNaviPoint locationWithLatitude:self.userDestitation.location.latitude longitude:self.userDestitation.location.longitude];
+//    NSArray *startPoints = @[self.startPoint];
+//    NSArray *endPoints   = @[self.endPoint];
+//    self.naviType = NavigationTypeGPS;
+//    self.navManagerTravelType = NavManagerTravelTypeDring;
+//    self.isWalkingNav = NO;
+//    BOOL suceess = [self.naviManager calculateDriveRouteWithStartPoints:startPoints endPoints:endPoints wayPoints:nil drivingStrategy:0];
+//    self.mapView.showsUserLocation = NO;
+//    [self showHUD:@"正在规划导航路线"];
+//    if (suceess) {
+//    } else {
+//        [self hideHUD];
+//        self.navManagerTravelType = NavManagerTravelTypeDefault;
+//    }
+//}
+
+- (void)ezzyDrivingCar
 {
-    self.dringNaviViewController = [[ECarDrivingViewController alloc]
-                                    initWithDelegate:self];
-    CLLocationCoordinate2D userCoordinate = self.config.userCoordinate;
-    self.startPoint = [AMapNaviPoint locationWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude];
-    self.endPoint = [AMapNaviPoint locationWithLatitude:self.userDestitation.location.latitude longitude:self.userDestitation.location.longitude];
-    NSArray *startPoints = @[self.startPoint];
-    NSArray *endPoints   = @[self.endPoint];
+    EZZYDrivingViewController *drivingViewController = [[EZZYDrivingViewController alloc] init];
+    drivingViewController.polyArray = self.polyArray;
+    drivingViewController.carInfo = self.selectCar;
+    drivingViewController.drivingDelegate = self;
+    [drivingViewController checkLanYa];
     self.naviType = NavigationTypeGPS;
     self.navManagerTravelType = NavManagerTravelTypeDring;
     self.isWalkingNav = NO;
-    BOOL suceess = [self.naviManager calculateDriveRouteWithStartPoints:startPoints endPoints:endPoints wayPoints:nil drivingStrategy:0];
-    self.mapView.showsUserLocation = NO;
-    [self showHUD:@"正在规划导航路线"];
-    if (suceess) {
-    } else {
-        [self hideHUD];
-        self.navManagerTravelType = NavManagerTravelTypeDefault;
-    }
+    [self.navigationController pushViewController:drivingViewController animated:NO];
 }
 
 - (void)naviManagerOnCalculateRouteSuccess:(AMapNaviManager *)naviManager
@@ -1460,11 +1483,12 @@ typedef void (^BookCarBlock)(id model);
         [self.warkingNaviewContoller checkLanYa];
         self.warkingNaviewContoller.viewShowMode = AMapNaviViewShowModeCarNorthDirection;
         [self.naviManager presentNaviViewController:self.warkingNaviewContoller animated:NO];
-    } else if (self.navManagerTravelType == NavManagerTravelTypeDring) {
-        [self delayHidHUD:@"规划成功"];
-        [self presentDrivingViewWithModel:self.selectCar];
-        
     }
+//    else if (self.navManagerTravelType == NavManagerTravelTypeDring) {
+//        [self delayHidHUD:@"规划成功"];
+//        [self presentDrivingViewWithModel:self.selectCar];
+//        
+//    }
 }
 
 - (void)naviManager:(AMapNaviManager *)naviManager onCalculateRouteFailure:(NSError *)error
@@ -1480,12 +1504,12 @@ typedef void (^BookCarBlock)(id model);
 - (void)naviManager:(AMapNaviManager *)naviManager didPresentNaviViewController:(UIViewController *)naviViewController
 {
     self.naviManager.isRecalculateRouteForYaw = YES;
-    if (self.bottomView.hidden == NO) {
-        [self quxiaoButtonClicked:nil];
-    }
+//    if (self.bottomView.hidden == NO) {
+//        [self quxiaoButtonClicked:nil];
+//    }
     self.persentNav = YES;
-    [self.mapView removeOverlays:self.ecarsAry];
-    [self.mapView removeAnnotations:self.annotationAry];
+//    [self.mapView removeOverlays:self.ecarsAry];
+//    [self.mapView removeAnnotations:self.annotationAry];
     if (self.naviType == NavigationTypeGPS)
     {
         [self.naviManager startGPSNavi];
@@ -1512,25 +1536,33 @@ typedef void (^BookCarBlock)(id model);
     }
     [self.naviManager dismissNaviViewControllerAnimated:NO];
     
-    if ([naviViewController isKindOfClass:[ECarDrivingViewController class]]) {
-        [self addzhifuViewJieshu];
-    }
-    self.mapView.frame = CGRectMake(0, 0, kScreenW, kScreenH);
-    [self configMagView];
-    self.isWalkingNav = NO;
-    self.navManagerTravelType = NavManagerTravelTypeDefault;
-    self.mapView.showsCompass = NO;
-    self.mapView.showsScale = NO;
-    if (!(self.config.exitTag == ExitNaviTagOpenLockSuccess)) {
-        // 开锁成之后出现行车导航按钮
-        self.mudiLabel.text = @"输入目的地";
-        self.mapView.showsUserLocation = YES;
-        self.mapView.showsLabels = YES;
-        [self fetchCarLocationDataisAll:YES andLocationCoordinate:self.userCoordinate];
-    }
+//    if ([naviViewController isKindOfClass:[ECarDrivingViewController class]]) {
+//        [self addzhifuViewJieshu];
+//    }
+//    self.mapView.frame = CGRectMake(0, 0, kScreenW, kScreenH);
+//    [self configMagView];
+//    self.isWalkingNav = NO;
+//    self.navManagerTravelType = NavManagerTravelTypeDefault;
+//    self.mapView.showsCompass = NO;
+//    self.mapView.showsScale = NO;
+//    if (!(self.config.exitTag == ExitNaviTagOpenLockSuccess)) {
+//        // 开锁成之后出现行车导航按钮
+////        self.mudiLabel.text = @"输入目的地";
+//        self.mapView.showsUserLocation = YES;
+//        self.mapView.showsLabels = YES;
+//        [self fetchCarLocationDataisAll:YES andLocationCoordinate:self.userCoordinate];
+//    }
+    [self fetchCarLocationDataisAll:YES andLocationCoordinate:self.userCoordinate];
     if (_detailView) {
         [self detailViewHidde:YES];
     }
+}
+
+- (void)endOrderBackZhiFu
+{
+    [self hideHUD];
+    [self fetchCarLocationDataisAll:YES andLocationCoordinate:CLLocationCoordinate2DMake(self.userCoordinate.latitude, self.userCoordinate.longitude)];
+    [self addzhifuViewJieshu];
 }
 
 #pragma mark 添加支付界面
@@ -1542,24 +1574,12 @@ typedef void (^BookCarBlock)(id model);
         [alert show];
         return;
     }
-    weak_Self(self);
-    self.zhifu = [[ECarZhiFuViewController alloc] init];
-    self.zhifu.panduan = YES;
-    if (config.chaochufanwei == 500) {
-        self.zhifu.sendType = sendToHouTaiByVip;
-        config.chaochufanwei = 0;
-    }
-    self.zhifu.priceCar = config.currentPrice;
-    self.zhifu.orderID = config.orignOrderNo;
-    self.zhifu.view.frame = self.view.bounds;
-    self.zhifu.backblock = ^{
-        [weakSelf.zhifu.view removeFromSuperview];
-        weakSelf.navigationController.navigationBar.hidden = NO;
-        weakSelf.zhifu = nil;
-    };
-    self.navigationController.navigationBar.hidden = YES;
-    [self.view addSubview:self.zhifu.view];
-    [self.view bringSubviewToFront:self.zhifu.view];
+    ECarZhiFuViewController *zhifu = [[ECarZhiFuViewController alloc] init];
+    zhifu.panduan = YES;
+    zhifu.priceCar = config.currentPrice;
+    zhifu.orderID = config.orignOrderNo;
+    zhifu.view.frame = self.view.bounds;
+    [self.navigationController pushViewController:zhifu animated:NO];
 }
 
 /*!
@@ -1588,9 +1608,6 @@ typedef void (^BookCarBlock)(id model);
 - (void)naviManager:(AMapNaviManager *)naviManager didUpdateNaviLocation:(AMapNaviLocation *)naviLocation
 {
     self.userCoordinate = CLLocationCoordinate2DMake(naviLocation.coordinate.latitude, naviLocation.coordinate.longitude);
-    if (self.navManagerTravelType == NavManagerTravelTypeDring || self.navManagerTravelType == NavManagerTravelTypeWalk) {
-        [self.mapView setCenterCoordinate:self.userCoordinate];
-    }
     self.config.userCoordinate = CLLocationCoordinate2DMake(naviLocation.coordinate.latitude, naviLocation.coordinate.longitude);
 }
 
@@ -1641,46 +1658,49 @@ typedef void (^BookCarBlock)(id model);
 #pragma mark - 订单代理方法
 - (void)presentDringNavigationWithModel:(OrderModel *)model andCarInfo:(ECarCarInfo *)carInfo
 {
-    self.dringNaviViewController = [[ECarDrivingViewController alloc]
-                                    initWithDelegate:self];
-    
-    CLLocationCoordinate2D userCoordinate = self.config.userCoordinate;
-    self.startPoint = [AMapNaviPoint locationWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude];
-    self.endPoint = [AMapNaviPoint locationWithLatitude:model.endPLatitude.doubleValue longitude:model.endPLongitude.doubleValue];
-    NSArray *startPoints = @[self.startPoint];
-    NSArray *endPoints   = @[self.endPoint];
-    self.naviType = NavigationTypeGPS;
     self.selectCar = carInfo;
-    self.isWalkingNav = NO;
-    self.navManagerTravelType = NavManagerTravelTypeDring;
-    [self showHUD:@"正在规划路径..."];
-    BOOL success = [self.naviManager calculateDriveRouteWithStartPoints:startPoints endPoints:endPoints wayPoints:nil drivingStrategy:0];
-    self.mapView.showsUserLocation = NO;
-    if (success) {
-        
-    } else {
-        [self hideHUD];
-        [self delayHidHUD:@"无网络，请稍后再试"];
-        self.navManagerTravelType = NavManagerTravelTypeDefault;
-    }
+    [self ezzyDrivingCar];
+    
+//    self.dringNaviViewController = [[ECarDrivingViewController alloc]
+//                                    initWithDelegate:self];
+    
+//    CLLocationCoordinate2D userCoordinate = self.config.userCoordinate;
+//    self.startPoint = [AMapNaviPoint locationWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude];
+//    self.endPoint = [AMapNaviPoint locationWithLatitude:model.endPLatitude.doubleValue longitude:model.endPLongitude.doubleValue];
+//    NSArray *startPoints = @[self.startPoint];
+//    NSArray *endPoints   = @[self.endPoint];
+//    self.naviType = NavigationTypeGPS;
+//    self.selectCar = carInfo;
+//    self.isWalkingNav = NO;
+//    self.navManagerTravelType = NavManagerTravelTypeDring;
+//    [self showHUD:@"正在规划路径..."];
+//    BOOL success = [self.naviManager calculateDriveRouteWithStartPoints:startPoints endPoints:endPoints wayPoints:nil drivingStrategy:0];
+//    self.mapView.showsUserLocation = NO;
+//    if (success) {
+//        
+//    } else {
+//        [self hideHUD];
+//        [self delayHidHUD:@"无网络，请稍后再试"];
+//        self.navManagerTravelType = NavManagerTravelTypeDefault;
+//    }
 }
 
-- (void)presentDrivingViewWithModel:(ECarCarInfo *)carInfo
-{
-    self.dringNaviViewController.showTrafficBar = NO;
-    self.dringNaviViewController.showUIElements = NO;
-    self.dringNaviViewController.carInfo = carInfo;
-    self.dringNaviViewController.drivingDelegate = self;
-    self.dringNaviViewController.viewShowMode = AMapNaviViewShowModeCarNorthDirection;
-    [self.dringNaviViewController checkLanYa];
-    [self.naviManager presentNaviViewController:self.dringNaviViewController animated:NO];
-}
+//- (void)presentDrivingViewWithModel:(ECarCarInfo *)carInfo
+//{
+//    self.dringNaviViewController.showTrafficBar = NO;
+//    self.dringNaviViewController.showUIElements = NO;
+//    self.dringNaviViewController.carInfo = carInfo;
+//    self.dringNaviViewController.drivingDelegate = self;
+//    self.dringNaviViewController.viewShowMode = AMapNaviViewShowModeCarNorthDirection;
+//    [self.dringNaviViewController checkLanYa];
+//    [self.naviManager presentNaviViewController:self.dringNaviViewController animated:NO];
+//}
 
 - (void)presentWarkingNavigationWithModel:(OrderModel *)model andCarInfo:(ECarCarInfo *)carInfo
 {
     weak_Self(self);
     self.userDestitation = [[AMapPOI alloc] init];
-    self.userDestitation.location = [AMapGeoPoint locationWithLatitude:model.endPLatitude.floatValue longitude:model.endPLongitude.floatValue];
+    self.userDestitation.location = [AMapGeoPoint locationWithLatitude:39.90815613 longitude:116.3973999];
     self.warkingNaviewContoller = [[ECarMapNaviViewController alloc]
                                    initWithDelegate:self];
     self.warkingNaviewContoller.isYanShi = [model.isYanShi integerValue];
@@ -1740,15 +1760,15 @@ typedef void (^BookCarBlock)(id model);
 }
 
 #pragma mark - ECarDrivingViewControllerDelegate （可删）
-- (void)zhifuViewPresentWithState:(BOOL)State
-{
-    weak_Self(self);
-    ECarZhiFuViewController * zhifu = [[ECarZhiFuViewController alloc] init];
-    zhifu.panduan = State;
-    zhifu.zhifublock = ^{
-        [weakSelf.naviManager presentNaviViewController:self.dringNaviViewController animated:NO];
-    };
-}
+//- (void)zhifuViewPresentWithState:(BOOL)State
+//{
+//    weak_Self(self);
+//    ECarZhiFuViewController * zhifu = [[ECarZhiFuViewController alloc] init];
+//    zhifu.panduan = State;
+//    zhifu.zhifublock = ^{
+//        [weakSelf.naviManager presentNaviViewController:self.dringNaviViewController animated:NO];
+//    };
+//}
 
 #pragma mark - ECarWorkingViewControllerDelegate
 - (void)startSpeekingRoadInfo
@@ -1779,7 +1799,7 @@ typedef void (^BookCarBlock)(id model);
     } else if (alertView.tag == AlertTagShuRuMuDiDi)
     {
         if (buttonIndex == 0) {
-            [self sousuoliebiao];
+//            [self sousuoliebiao];
         }
     } else if (alertView.tag == AlertTagWeiWanChengDingDan && buttonIndex == 0) {
         if (self.dingdanDic) {
@@ -1787,7 +1807,6 @@ typedef void (^BookCarBlock)(id model);
             if (model.isfinish.intValue == 4) {
                 [self addzhifuViewJieshuWithModel:model];
             } else if (model.isfinish.intValue == 1) {
-                [self showHUD:@"正在规划路线..."];
                 self.config.jinruZhuangTai = 10;
                 self.config.orignOrderNo = model.orderID;
                 ECarCarInfo * carInfo = [[ECarCarInfo alloc] init];
@@ -1800,7 +1819,7 @@ typedef void (^BookCarBlock)(id model);
                 carInfo.lanYaWriteCharacteristiceName = model.lanYaDic[@"lanYaWriteCharacteristiceName"];
                 carInfo.lanYaNotifyCharacteristiceName = model.lanYaDic[@"lanYaNotifyCharacteristiceName"];
                 [self presentDringNavigationWithModel:model andCarInfo:carInfo];
-            } else if (model.isfinish.intValue == 0) {
+            } else if (model.isfinish != nil && model.isfinish.intValue == 0) {
                 [self showHUD:@"正在规划路线..."];
                 self.config.orignOrderNo = model.orderID;
                 [self presentWarkingNavigationWithModel:model andCarInfo:nil];
@@ -1823,63 +1842,50 @@ typedef void (^BookCarBlock)(id model);
         [alert show];
         return;
     }
-    weak_Self(self);
-    self.zhifu = [[ECarZhiFuViewController alloc] init];
-    self.zhifu.panduan = YES;
-    if (config.chaochufanwei == 500) {
-        config.chaochufanwei = 0;
-        self.zhifu.sendType = sendToHouTaiByVip;
-    }
+    ECarZhiFuViewController *zhifu = [[ECarZhiFuViewController alloc] init];
+    zhifu.panduan = YES;
     config.currentPrice = [NSString stringWithFormat:@"%@", model.rmb];
-    self.zhifu.priceCar = [NSString stringWithFormat:@"%@", model.rmb];
-    self.zhifu.orderID = model.orderID;
-    self.zhifu.view.frame = self.view.bounds;
-    self.zhifu.backblock = ^{
-        [weakSelf.zhifu.view removeFromSuperview];
-        weakSelf.navigationController.navigationBar.hidden = NO;
-        weakSelf.zhifu = nil;
-    };
-    self.navigationController.navigationBar.hidden = YES;
-    [self.view addSubview:self.zhifu.view];
-    [self.view bringSubviewToFront:self.zhifu.view];
+    zhifu.priceCar = [NSString stringWithFormat:@"%@", model.rmb];
+    zhifu.orderID = model.orderID;
+    [self.navigationController pushViewController:zhifu animated:NO];
 }
 
 #pragma mark 搜索列表
-- (void)sousuoliebiao
-{
-    weak_Self(self);
-    LocationCheck(weakSelf)
-    ECarInputViewController * destinationVC = [[ECarInputViewController alloc] init];
-    if (self.carListStatue) {
-        self.carListStatue = NO;
-        destinationVC.bookbackCar = ^(AMapPOI *poi){
-            weakSelf.userDestitation = poi;
-            weakSelf.mudiLabel.text = poi.name;
-            weakSelf.mdLabel.text = poi.name;
-            if ([weakSelf.mudiLabel.text isEqualToString:@"输入目的地"]) {
-                return ;
-            }
-            CheckLogin(weakSelf);
-            [weakSelf setShiYongButtonHiddenNo];
-        };
-    }
-    
-    // 目的地列表点击回调
-    destinationVC.destinationBlock = ^(AMapPOI *poi){
-        weakSelf.userDestitation = poi;
-        weakSelf.mudiLabel.text = poi.name;
-        weakSelf.mdLabel.text = poi.name;
-        // 输入目的地之后显示车辆信息
-        if (weakSelf.locationSuccess) {
-            [weakSelf fetchCarLocationDataisAll:NO andLocationCoordinate:CLLocationCoordinate2DMake(poi.location.latitude, poi.location.longitude)];
-        }else{
-            // 定位失败
-            LocationCheck(weakSelf)
-        }
-    };
-    destinationVC.currentPOI = weakSelf.userDestitation;
-    [weakSelf.navigationController pushViewController:destinationVC animated:YES];
-}
+//- (void)sousuoliebiao
+//{
+//    weak_Self(self);
+//    LocationCheck(weakSelf)
+//    ECarInputViewController * destinationVC = [[ECarInputViewController alloc] init];
+//    if (self.carListStatue) {
+//        self.carListStatue = NO;
+//        destinationVC.bookbackCar = ^(AMapPOI *poi){
+//            weakSelf.userDestitation = poi;
+//            weakSelf.mudiLabel.text = poi.name;
+//            weakSelf.mdLabel.text = poi.name;
+//            if ([weakSelf.mudiLabel.text isEqualToString:@"输入目的地"]) {
+//                return ;
+//            }
+//            CheckLogin(weakSelf);
+////            [weakSelf setShiYongButtonHiddenNo];
+//        };
+//    }
+//    
+//    // 目的地列表点击回调
+//    destinationVC.destinationBlock = ^(AMapPOI *poi){
+//        weakSelf.userDestitation = poi;
+//        weakSelf.mudiLabel.text = poi.name;
+//        weakSelf.mdLabel.text = poi.name;
+//        // 输入目的地之后显示车辆信息
+//        if (weakSelf.locationSuccess) {
+//            [weakSelf fetchCarLocationDataisAll:NO andLocationCoordinate:CLLocationCoordinate2DMake(poi.location.latitude, poi.location.longitude)];
+//        }else{
+//            // 定位失败
+//            LocationCheck(weakSelf)
+//        }
+//    };
+//    destinationVC.currentPOI = weakSelf.userDestitation;
+//    [weakSelf.navigationController pushViewController:destinationVC animated:YES];
+//}
 
 /**
  - (void)sousuoliebiao
@@ -1960,9 +1966,6 @@ typedef void (^BookCarBlock)(id model);
 
 - (void)hebingAnnotations
 {
-    if (self.bottomView.hidden == NO) {
-        return;
-    }
     if (self.annotationAry.count == 0) {
         return;
     }

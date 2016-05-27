@@ -8,12 +8,13 @@
 
 #import "WZSMViewController.h"
 #import "ECarUserManager.h"
+#import "YLLabel.h"
 
 @interface WZSMViewController ()
 
-@property (nonatomic, strong)UITextView * textView;
+@property (nonatomic, strong) YLLabel * textView;
 
-@property (nonatomic, strong)ECarUserManager * zzManager;
+@property (nonatomic, strong) ECarUserManager * zzManager;
 
 @end
 
@@ -27,29 +28,23 @@
     self.title = @"违章说明";
     self.automaticallyAdjustsScrollViewInsets = NO;
     _zzManager = [ECarUserManager new];
-    
     [self creatUI];
     [self loadData];
 }
 
 - (void)creatUI{
-    _textView = [[UITextView alloc]initWithFrame:CGRectMake(27 / 375.f * kScreenW, 64 + 32 / 667.f * kScreenH, kScreenW - (2 * 27 / 375.f * kScreenW), kScreenH - 64)];
+    _textView = [[YLLabel alloc]initWithFrame:CGRectMake(27 / 375.f * kScreenW, 64 + 32 / 667.f * kScreenH, kScreenW - (2 * 27 / 375.f * kScreenW), kScreenH - 64)];
     _textView.backgroundColor = WhiteColor;
-    _textView.editable = NO;
-    _textView.scrollEnabled = NO;
+    _textView.textColor = [UIColor blackColor];
+    _textView.font = FontType;
+    _textView.lineSpacing = 10;
     [self.view addSubview:_textView];
 }
 
 - (void)loadData{
     [[_zzManager weizhangshuoming] subscribeNext:^(id x) {
         NSDictionary * dic = x;
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        paragraphStyle.lineSpacing = 10;// 字体的行间距
-        NSDictionary *attributes = @{
-                                     NSFontAttributeName:[UIFont systemFontOfSize:14.0f],
-                                     NSParagraphStyleAttributeName:paragraphStyle
-                                     };
-        _textView.attributedText = [[NSAttributedString alloc] initWithString:[dic objectForKey:@"msg"] attributes:attributes];
+        [_textView setText:[dic objectForKey:@"msg"]];
     } completed:^{
         
     }];

@@ -52,7 +52,6 @@
 #else
 #define PDLog(...)
 #endif
-
 #define TokenPrams  [ECarConfigs shareInstance].TokenID, @"tokenid"
 
 #pragma mark - 微信支付
@@ -63,8 +62,11 @@
 #define MCH_ID          @"1285274401"
 // 商户API密钥，填写相应参数
 #define PARTNER_ID      @"DadreamsTech9581mOOv1111khcycxme"
+
 // 支付结果回调页面
-#define NOTIFY_URL      [NSString stringWithFormat:@"%@car/pay/wxpayCar.do", ServerURL]
+#define kNOTIFY_URL             [NSString stringWithFormat:@"%@car/pay/wxpayCar.do", ServerURL]
+#define kWeiXinBuyMemNotify     [NSString stringWithFormat:@"%@car/pay/wxpayVip.do", ServerURL]
+
 // 获取服务器端支付数据地址（商户自定义）
 #define SP_URL          @"http://wxpay.weixin.qq.com/pub_v2/app/app_pay.php"
 
@@ -72,26 +74,25 @@
 #define kPernerID       @"2088121166116940"
 #define kSallerID       @"company@dadreams.com"
 #define kZhiFuTag       12321
-#define kZhiFuNotify    [NSString stringWithFormat:@"%@car/pay/alipayCar.do", ServerURL]
+
+#define kZhiFuNotify            [NSString stringWithFormat:@"%@car/pay/alipayCar.do", ServerURL]
+#define kZhiFuBuyMemNotify      [NSString stringWithFormat:@"%@car/pay/alipayVip.do", ServerURL]
 
 // 测试阿里云（后台）
 #define  OSSAccessKey   @"u4j7YHkgHEwnVFoQ"
 #define  OSSSecretKey   @"KmAlwsQlSb4tQzkrwhJCNjxX2hQSsn"
 #define  OSSBucketServer   @"oss-moov-beijing"
-
 #define  OSSHostID   @"oss-cn-beijing.aliyuncs.com"
 
-
-
 //#define  ServerURL @"http://123.57.227.139:9888/"
 //#define  ServerURL @"http://123.57.227.139:9888/"
 //#define  ServerURL @"http://123.57.227.139:9888/"
-#define  ServerURL @"http://123.57.227.139:9888/"
 
 
+//#define  ServerURL @"http://123.57.227.139:9888/"
 
-//#define  ServerURL @"http://101.201.196.43:9888/"
 
+#define  ServerURL @"http://101.201.196.43:9888/"
 
 
 //#define  ServerURL @"http://192.168.0.50:8080/"

@@ -7,6 +7,7 @@
 //
 
 #import "EZZYMemberModle.h"
+#import "EZZYOnSaleMemberModel.h"
 
 @implementation EZZYMemberModle
 
@@ -14,11 +15,22 @@
 {
     self = [super init];
     if (self) {
-        self.levelCode = [NSString stringWithFormat:@"%@", dic[@"levelCode"]];
-        self.levelMoney = [NSString stringWithFormat:@"%@", dic[@"levelMoney"]];
+        self.subModels = [[NSMutableArray alloc] init];
         self.levelName = [NSString stringWithFormat:@"%@", dic[@"levelName"]];
-        self.levelUnit = [NSString stringWithFormat:@"%@", dic[@"levelUnit"]];
         self.note = [NSString stringWithFormat:@"%@", dic[@"note"]];
+        NSArray *array = [[NSArray alloc] initWithArray:dic[@"viplist"]];
+        NSString *str = @"";
+        for (NSDictionary *sDic in array) {
+            NSString *month = [NSString stringWithFormat:@"%@", sDic[@"effeTime"]];
+            if ([month isEqualToString:@"1"]) {
+                str = [NSString stringWithFormat:@"%@", sDic[@"levelMoney"]];
+            }
+        }
+        for (NSDictionary *subDic in array) {
+            EZZYOnSaleMemberModel *model = [[EZZYOnSaleMemberModel alloc] initWithOnSaleModelDic:subDic];
+            model.yuanjia = [NSString stringWithFormat:@"%zd", model.mothly.integerValue * str.integerValue];
+            [self.subModels addObject:model];
+        }
     }
     return self;
 }

@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 
 typedef enum arrowStates {
-    UPStates = 0,
-    DOWNStates = 1
+    DOWNStates = 0,
+    UPStates = 1
 }ArrowStates;
 
 typedef void(^StateHadChangedBlock)(ArrowStates state);

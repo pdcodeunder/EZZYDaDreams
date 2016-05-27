@@ -41,7 +41,31 @@
     [self JPushconfig:launchOptions];
     self.window.backgroundColor = WhiteColor;
 
+//    [self testPushFromJava:launchOptions];
+    
     return YES;
+}
+
+- (void)testPushFromJava:(NSDictionary *)launchOptions
+{
+    NSLog(@"launchOptionslaunchOptions  :   %@", launchOptions);
+    // 判断是否由
+    if ([launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] != nil) {
+        //获取应用程序消息通知标记数（即小红圈中的数字）
+        NSInteger badge = [UIApplication sharedApplication].applicationIconBadgeNumber;
+        if (badge>0) {
+            //如果应用程序消息通知标记数（即小红圈中的数字）大于0，清除标记。
+            badge--;
+            //清除标记。清除小红圈中数字，小红圈中数字为0，小红圈才会消除。
+            [UIApplication sharedApplication].applicationIconBadgeNumber = badge;
+        }
+    }
+    // 设置允许接收的通知类型
+    // alert：消息提醒  badge：右上角的数字提醒  sound：声音提醒
+    UIUserNotificationSettings * setting = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound categories:nil];
+    
+    // 完成注册
+    [[UIApplication sharedApplication] registerUserNotificationSettings:setting];
 }
 
 #pragma mark - 极光推送
@@ -108,6 +132,7 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     // Required
     [APService handleRemoteNotification:userInfo];
+    
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler
@@ -122,11 +147,10 @@
         badgeValue -= 1;
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badgeValue];
         [APService setBadge:badgeValue];
-    }
-    else
-    {
+    } else {
         [APService resetBadge];
     }
+    
     // 向JPUSH上报收到APNS消息
     [APService handleRemoteNotification:userInfo];
     completionHandler(UIBackgroundFetchResultNewData);
@@ -135,15 +159,15 @@
 #pragma mark 推送通知响应事件
 - (void)networkDidSetup:(NSNotification *)notification
 {
-    
+    PDLog(@"networkDidSetup");
 }
 - (void)networkDidClose:(NSNotification *)notification
 {
-    
+    PDLog(@"networkDidClose");
 }
 - (void)networkDidRegister:(NSNotification *)notification
 {
-    
+    PDLog(@"networkDidRegister");
 }
 - (void)networkDidLogin:(NSNotification *)notification
 {
@@ -152,12 +176,12 @@
 //接收自定义消息
 - (void)networkDidReceiveMessage:(NSNotification *)notification
 {
-    //    NSLog(@"自定义消息%@",notification);
+    NSLog(@"自定义消息%@",notification);
 }
 
 - (void)serviceError:(NSNotification *)notification
 {
-    
+    NSLog(@"义消息%@",notification);
 }
 
 #pragma mark - 微信支付宝回调
@@ -241,6 +265,11 @@
                 }
                 if (config.zhifuwancheng == 10) {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"buyMemberZhiFuFinished" object:nil userInfo:nil];
+                    return;
+                }
+                
+                if (config.zhifuwancheng == 50) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"baoYeZhiFuWanCheng" object:nil userInfo:nil];
                     return;
                 }
                 strTitle = @"支付成功";

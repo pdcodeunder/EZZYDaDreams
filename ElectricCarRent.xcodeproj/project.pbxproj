@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E70E70D91C898CF800391A5B /* ECarAboutUsController.m in Sources */ = {isa = PBXBuildFile; fileRef = E70E70D81C898CF800391A5B /* ECarAboutUsController.m */; };
 		E71703BF1CE1893400DFD5FF /* EZZYMemberZhiFuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E71703BE1CE1893400DFD5FF /* EZZYMemberZhiFuViewController.m */; };
 		E71A7E9A1CBB831F004B47C3 /* ECarVIPNumberViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E71A7E911CBB831F004B47C3 /* ECarVIPNumberViewController.m */; };
 		E71A7E9B1CBB831F004B47C3 /* EZZYMemberViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E71A7E931CBB831F004B47C3 /* EZZYMemberViewController.m */; };
@@ -39,6 +38,14 @@
 		E7579D4B1CC7795B009736F2 /* BabyToy.m in Sources */ = {isa = PBXBuildFile; fileRef = E7579D3F1CC7795B009736F2 /* BabyToy.m */; };
 		E7579D4C1CC7795B009736F2 /* PDLanYaLianJie.m in Sources */ = {isa = PBXBuildFile; fileRef = E7579D411CC7795B009736F2 /* PDLanYaLianJie.m */; };
 		E7579D4D1CC7795B009736F2 /* PeripheralInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E7579D431CC7795B009736F2 /* PeripheralInfo.m */; };
+		E762037A1CE33C7B00513349 /* EZZYDrivingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E76203791CE33C7B00513349 /* EZZYDrivingViewController.m */; };
+		E76203841CE568A300513349 /* EZZYBuyMemberTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E76203831CE568A300513349 /* EZZYBuyMemberTableViewCell.m */; };
+		E76203871CE5792400513349 /* EZZYOnSaleMemberModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E76203861CE5792400513349 /* EZZYOnSaleMemberModel.m */; };
+		E762038A1CE95DDB00513349 /* NewOverNeightViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E76203891CE95DDB00513349 /* NewOverNeightViewController.m */; };
+		E762038D1CE95E9200513349 /* YLLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = E762038C1CE95E9200513349 /* YLLabel.m */; };
+		E76203A01CE9DB4900513349 /* PDKeyChainStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E762039F1CE9DB4900513349 /* PDKeyChainStore.m */; };
+		E76203A31CE9DC0F00513349 /* PDUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = E76203A21CE9DC0F00513349 /* PDUUID.m */; };
+		E76203E61CEC700500513349 /* ECarAboutUsController.m in Sources */ = {isa = PBXBuildFile; fileRef = E76203E51CEC700500513349 /* ECarAboutUsController.m */; };
 		E76686591CAA9A6400245A48 /* ECarAboutEZZYController.m in Sources */ = {isa = PBXBuildFile; fileRef = E76686581CAA9A6400245A48 /* ECarAboutEZZYController.m */; };
 		E766865C1CAB659900245A48 /* ECarFaPiaoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E766865B1CAB659900245A48 /* ECarFaPiaoViewController.m */; };
 		E766865F1CAB694200245A48 /* ECarFaPiaoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E766865E1CAB694200245A48 /* ECarFaPiaoTableViewCell.m */; };
@@ -232,8 +239,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		E70E70D71C898CF800391A5B /* ECarAboutUsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECarAboutUsController.h; sourceTree = "<group>"; };
-		E70E70D81C898CF800391A5B /* ECarAboutUsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECarAboutUsController.m; sourceTree = "<group>"; };
 		E71703BD1CE1893400DFD5FF /* EZZYMemberZhiFuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZZYMemberZhiFuViewController.h; sourceTree = "<group>"; };
 		E71703BE1CE1893400DFD5FF /* EZZYMemberZhiFuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZZYMemberZhiFuViewController.m; sourceTree = "<group>"; };
 		E71A7E901CBB831F004B47C3 /* ECarVIPNumberViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECarVIPNumberViewController.h; sourceTree = "<group>"; };
@@ -293,6 +298,24 @@
 		E7579D411CC7795B009736F2 /* PDLanYaLianJie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDLanYaLianJie.m; sourceTree = "<group>"; };
 		E7579D421CC7795B009736F2 /* PeripheralInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralInfo.h; sourceTree = "<group>"; };
 		E7579D431CC7795B009736F2 /* PeripheralInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeripheralInfo.m; sourceTree = "<group>"; };
+		E76203781CE33C7B00513349 /* EZZYDrivingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZZYDrivingViewController.h; sourceTree = "<group>"; };
+		E76203791CE33C7B00513349 /* EZZYDrivingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZZYDrivingViewController.m; sourceTree = "<group>"; };
+		E762037B1CE4286F00513349 /* EZZYNetworkingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZZYNetworkingService.h; sourceTree = "<group>"; };
+		E76203821CE568A300513349 /* EZZYBuyMemberTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZZYBuyMemberTableViewCell.h; sourceTree = "<group>"; };
+		E76203831CE568A300513349 /* EZZYBuyMemberTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZZYBuyMemberTableViewCell.m; sourceTree = "<group>"; };
+		E76203851CE5792400513349 /* EZZYOnSaleMemberModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZZYOnSaleMemberModel.h; sourceTree = "<group>"; };
+		E76203861CE5792400513349 /* EZZYOnSaleMemberModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZZYOnSaleMemberModel.m; sourceTree = "<group>"; };
+		E76203881CE95DDB00513349 /* NewOverNeightViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewOverNeightViewController.h; sourceTree = "<group>"; };
+		E76203891CE95DDB00513349 /* NewOverNeightViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewOverNeightViewController.m; sourceTree = "<group>"; };
+		E762038B1CE95E9200513349 /* YLLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLLabel.h; sourceTree = "<group>"; };
+		E762038C1CE95E9200513349 /* YLLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLLabel.m; sourceTree = "<group>"; };
+		E762039D1CE9D9A900513349 /* ElectricCarRent.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ElectricCarRent.entitlements; sourceTree = "<group>"; };
+		E762039E1CE9DB4900513349 /* PDKeyChainStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDKeyChainStore.h; sourceTree = "<group>"; };
+		E762039F1CE9DB4900513349 /* PDKeyChainStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDKeyChainStore.m; sourceTree = "<group>"; };
+		E76203A11CE9DC0F00513349 /* PDUUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDUUID.h; sourceTree = "<group>"; };
+		E76203A21CE9DC0F00513349 /* PDUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDUUID.m; sourceTree = "<group>"; };
+		E76203E41CEC700500513349 /* ECarAboutUsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECarAboutUsController.h; sourceTree = "<group>"; };
+		E76203E51CEC700500513349 /* ECarAboutUsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECarAboutUsController.m; sourceTree = "<group>"; };
 		E76686571CAA9A6400245A48 /* ECarAboutEZZYController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECarAboutEZZYController.h; sourceTree = "<group>"; };
 		E76686581CAA9A6400245A48 /* ECarAboutEZZYController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECarAboutEZZYController.m; sourceTree = "<group>"; };
 		E766865A1CAB659900245A48 /* ECarFaPiaoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECarFaPiaoViewController.h; sourceTree = "<group>"; };
@@ -782,6 +805,8 @@
 			children = (
 				E71A7E951CBB831F004B47C3 /* EZZYMemberModle.h */,
 				E71A7E961CBB831F004B47C3 /* EZZYMemberModle.m */,
+				E76203851CE5792400513349 /* EZZYOnSaleMemberModel.h */,
+				E76203861CE5792400513349 /* EZZYOnSaleMemberModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -791,6 +816,8 @@
 			children = (
 				E71A7E9D1CBB8375004B47C3 /* EZZYMemberTableViewCell.h */,
 				E71A7E9E1CBB8375004B47C3 /* EZZYMemberTableViewCell.m */,
+				E76203821CE568A300513349 /* EZZYBuyMemberTableViewCell.h */,
+				E76203831CE568A300513349 /* EZZYBuyMemberTableViewCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -828,8 +855,8 @@
 		E724178B1C3A18B1001B3F28 /* 关于我们 */ = {
 			isa = PBXGroup;
 			children = (
-				E70E70D71C898CF800391A5B /* ECarAboutUsController.h */,
-				E70E70D81C898CF800391A5B /* ECarAboutUsController.m */,
+				E76203E41CEC700500513349 /* ECarAboutUsController.h */,
+				E76203E51CEC700500513349 /* ECarAboutUsController.m */,
 				E76686571CAA9A6400245A48 /* ECarAboutEZZYController.h */,
 				E76686581CAA9A6400245A48 /* ECarAboutEZZYController.m */,
 			);
@@ -1116,6 +1143,7 @@
 				E7670FDE1C3A435E009D0676 /* ECarUserManager.m */,
 				E72417A61C3A1A1D001B3F28 /* ECarMapManager.h */,
 				E72417A71C3A1A1D001B3F28 /* ECarMapManager.m */,
+				E762037B1CE4286F00513349 /* EZZYNetworkingService.h */,
 			);
 			path = "网络Model";
 			sourceTree = "<group>";
@@ -1136,10 +1164,14 @@
 		E76710221C3A7E0B009D0676 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				E76203881CE95DDB00513349 /* NewOverNeightViewController.h */,
+				E76203891CE95DDB00513349 /* NewOverNeightViewController.m */,
 				E76710251C3A7E53009D0676 /* ECarMapNaviViewController.h */,
 				E76710261C3A7E53009D0676 /* ECarMapNaviViewController.m */,
 				E767102B1C3A7E73009D0676 /* ECarDrivingViewController.h */,
 				E767102C1C3A7E73009D0676 /* ECarDrivingViewController.m */,
+				E76203781CE33C7B00513349 /* EZZYDrivingViewController.h */,
+				E76203791CE33C7B00513349 /* EZZYDrivingViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1279,6 +1311,7 @@
 		E76BFEDF1C32811700929A7C /* ElectricCarRent */ = {
 			isa = PBXGroup;
 			children = (
+				E762039D1CE9D9A900513349 /* ElectricCarRent.entitlements */,
 				E7EA5D871C33746700113236 /* 全局变量 */,
 				E7670FDC1C3A42F0009D0676 /* 网络Model */,
 				E7670FC31C3A32BA009D0676 /* 支付 */,
@@ -1487,6 +1520,8 @@
 		E7BC70C91CBD0B4A00CD9472 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				E762038B1CE95E9200513349 /* YLLabel.h */,
+				E762038C1CE95E9200513349 /* YLLabel.m */,
 				E7BC70D01CBD0BC600CD9472 /* ECarWeiZhangTableViewCell.h */,
 				E7BC70D11CBD0BC600CD9472 /* ECarWeiZhangTableViewCell.m */,
 			);
@@ -1625,6 +1660,10 @@
 				E7DA3DBD1C32A37400464521 /* NOValidateHelper.m */,
 				E7DA3DBE1C32A37400464521 /* ToolKit.h */,
 				E7DA3DBF1C32A37400464521 /* ToolKit.m */,
+				E762039E1CE9DB4900513349 /* PDKeyChainStore.h */,
+				E762039F1CE9DB4900513349 /* PDKeyChainStore.m */,
+				E76203A11CE9DC0F00513349 /* PDUUID.h */,
+				E76203A21CE9DC0F00513349 /* PDUUID.m */,
 			);
 			path = "常用方法";
 			sourceTree = "<group>";
@@ -1914,6 +1953,9 @@
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
+							com.apple.Keychain = {
+								enabled = 1;
+							};
 						};
 					};
 					E76BFEF51C32811800929A7C = {
@@ -2005,6 +2047,7 @@
 				E7FBF0FD1C918E190025B9BD /* AMapSearchManager.m in Sources */,
 				E7A120D41C8BE2DF000C897E /* ECarDestinationViewController.m in Sources */,
 				E7DA3E1B1C32A47400464521 /* ViewModelClass.m in Sources */,
+				E76203871CE5792400513349 /* EZZYOnSaleMemberModel.m in Sources */,
 				E7EA5DA11C33746800113236 /* PDOtherBaseViewController.m in Sources */,
 				E79862CC1C9B9B73001CFEA7 /* ECarQuYuJiaGeViewController.m in Sources */,
 				E7BC70DB1CBF286A00CD9472 /* ECarEntrustViewController.m in Sources */,
@@ -2022,6 +2065,7 @@
 				E76686591CAA9A6400245A48 /* ECarAboutEZZYController.m in Sources */,
 				E7670FD41C3A3A76009D0676 /* ApiXml.mm in Sources */,
 				E7670FBE1C3A326E009D0676 /* MJRefreshFooterView.m in Sources */,
+				E76203A01CE9DB4900513349 /* PDKeyChainStore.m in Sources */,
 				E7DA3E171C32A47400464521 /* DSAPropertySubscribing.m in Sources */,
 				E7DA3DC61C32A39700464521 /* KKFileManager.m in Sources */,
 				E7DA3DB81C32A01D00464521 /* RSADataVerifier.m in Sources */,
@@ -2057,6 +2101,7 @@
 				E7DA3DB51C32A01D00464521 /* NSDataEx.m in Sources */,
 				E76686681CAB802B00245A48 /* MumberFaPiaoModel.m in Sources */,
 				E7670FE91C3A480E009D0676 /* ECarTableViewHeadViewCell.m in Sources */,
+				E762038A1CE95DDB00513349 /* NewOverNeightViewController.m in Sources */,
 				E7579D481CC7795B009736F2 /* BabyPeripheralManager.m in Sources */,
 				E7860FEE1C3E3DA4005C5208 /* ECarPDDistance.m in Sources */,
 				E7A120D81C8BE2FA000C897E /* NSString+Category.m in Sources */,
@@ -2065,6 +2110,7 @@
 				E72417941C3A18F5001B3F28 /* ECarOrderViewController.m in Sources */,
 				E7DA3DDD1C32A46400464521 /* AFHTTPSessionManager.m in Sources */,
 				E7DA3DF61C32A46C00464521 /* AFNetworkActivityIndicatorManager.m in Sources */,
+				E76203A31CE9DC0F00513349 /* PDUUID.m in Sources */,
 				E7DA3DB41C32A01D00464521 /* MD5DataSigner.m in Sources */,
 				E7778A131CAD248F00EEEC3B /* ECarFapiaoHistoryTableViewCell.m in Sources */,
 				E7778A061CAD116B00EEEC3B /* SubmitViewController.m in Sources */,
@@ -2100,6 +2146,7 @@
 				E7DA3DE01C32A46400464521 /* AFURLConnectionOperation.m in Sources */,
 				E7DA3DE21C32A46400464521 /* AFURLResponseSerialization.m in Sources */,
 				E7DA3E181C32A47400464521 /* DSASignal.m in Sources */,
+				E762038D1CE95E9200513349 /* YLLabel.m in Sources */,
 				E7A120D51C8BE2DF000C897E /* ECarInputViewController.m in Sources */,
 				E71A7E9A1CBB831F004B47C3 /* ECarVIPNumberViewController.m in Sources */,
 				E7A120DB1C8BE36B000C897E /* ECarOrderTableViewCell.m in Sources */,
@@ -2135,6 +2182,7 @@
 				E7579D441CC7795B009736F2 /* BabyBluetooth.m in Sources */,
 				E7EA5D9B1C33746800113236 /* ECarLoginRegisterManager.m in Sources */,
 				E767102D1C3A7E73009D0676 /* ECarDrivingViewController.m in Sources */,
+				E76203E61CEC700500513349 /* ECarAboutUsController.m in Sources */,
 				E77649D11C494F3D0033312E /* jiagemingxiViewController.m in Sources */,
 				E7DA3DFC1C32A46C00464521 /* UIRefreshControl+AFNetworking.m in Sources */,
 				E76686651CAB7F7100245A48 /* ECarMumberFaPiaoViewController.m in Sources */,
@@ -2143,9 +2191,10 @@
 				E7DA3DDC1C32A46400464521 /* AFHTTPRequestOperationManager.m in Sources */,
 				E73F16DC1CA1948A00AF1A5B /* ECarMyCenterNormalTableViewCell.m in Sources */,
 				E7DA3DDF1C32A46400464521 /* AFSecurityPolicy.m in Sources */,
+				E762037A1CE33C7B00513349 /* EZZYDrivingViewController.m in Sources */,
+				E76203841CE568A300513349 /* EZZYBuyMemberTableViewCell.m in Sources */,
 				E76710191C3A5861009D0676 /* ECarFanWeiModel.m in Sources */,
 				E76710161C3A545C009D0676 /* CustomAnnotationView.m in Sources */,
-				E70E70D91C898CF800391A5B /* ECarAboutUsController.m in Sources */,
 				E72417B81C3A1E44001B3F28 /* ECarTableViewCell.m in Sources */,
 				E767101F1C3A6291009D0676 /* JJRGetCodeButton.m in Sources */,
 				E7BC70EA1CBF8BF900CD9472 /* ECarKaiPiaoSMViewController.m in Sources */,
@@ -2296,6 +2345,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = ElectricCarRent/ElectricCarRent.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Qiang Fu (JLHWZC693S)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Qiang Fu (JLHWZC693S)";
 				ENABLE_BITCODE = NO;
@@ -2337,6 +2387,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = ElectricCarRent/ElectricCarRent.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Qiang Fu (JLHWZC693S)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Qiang Fu (JLHWZC693S)";
 				ENABLE_BITCODE = NO;

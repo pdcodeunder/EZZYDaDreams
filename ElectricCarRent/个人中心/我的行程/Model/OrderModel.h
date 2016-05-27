@@ -22,21 +22,18 @@
 @property (nonatomic, strong) NSString * price;
 @property (nonatomic, strong) NSString * rmb;
 @property (nonatomic, copy)   NSString * powerunit;
-
 /**
  *  剩余时间
  */
 @property (nonatomic, strong) NSString * yanShiTime;
 // 是否延时
 @property (nonatomic, strong) NSString * isYanShi;
-
 // 目的地经纬度
 @property (nonatomic, copy) NSString * endPLongitude;
 @property (nonatomic, copy) NSString * endPLatitude;
 // 车经纬度
 @property (nonatomic, copy) NSString * carPLongtitude;
 @property (nonatomic, copy) NSString * carPLatitude;
-
 @property (nonatomic, strong) NSDictionary * lanYaDic;
 
 @end

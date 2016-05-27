@@ -145,7 +145,16 @@
     //订单标题，展示给用户
     NSString *order_name    = @"EZZY支付";
     //订单金额,单位（分）
-    NSString *order_price   = [NSString stringWithFormat:@"%zd", (NSInteger)(config.currentPrice.doubleValue * 100)];
+//    NSString *order_price   = [NSString stringWithFormat:@"%zd", (NSInteger)(config.currentPrice.doubleValue * 100)];
+    
+    //订单金额,单位（分）
+    NSString *order_price = config.isBaoye == 789 ? [NSString stringWithFormat:@"%zd", (NSInteger)(config.baoyePrice.doubleValue * 100)] : [NSString stringWithFormat:@"%zd", (NSInteger)(config.currentPrice.doubleValue * 100)];
+    NSString *orderId = config.isBaoye == 789 ? config.baoYeOrderId : config.orignOrderNo;
+    config.isBaoye = 0;
+    
+    NSString *notifyUrl = config.buyMemberNotify == 4444 ? kWeiXinBuyMemNotify : kNOTIFY_URL;
+    config.buyMemberNotify = 0;
+    
 //    NSString *order_price   = @"1";//1分钱测试
     //================================
     //预付单参数订单设置
@@ -161,8 +170,8 @@
     [packageParams setObject: noncestr          forKey:@"nonce_str"];   //随机串
     [packageParams setObject: @"APP"            forKey:@"trade_type"];  //支付类型，固定为APP
     [packageParams setObject: order_name        forKey:@"body"];        //订单描述，展示给用户
-    [packageParams setObject: NOTIFY_URL        forKey:@"notify_url"];  //支付结果异步通知
-    [packageParams setObject: config.orignOrderNo forKey:@"out_trade_no"];//商户订单号
+    [packageParams setObject: notifyUrl         forKey:@"notify_url"];  //支付结果异步通知
+    [packageParams setObject: orderId           forKey:@"out_trade_no"];//商户订单号
     [packageParams setObject: @"196.168.1.1"    forKey:@"spbill_create_ip"];//发器支付的机器ip
     [packageParams setObject: order_price       forKey:@"total_fee"];       //订单金额，单位为分
 //    NSLog(@"iiueuiui  %@", packageParams);

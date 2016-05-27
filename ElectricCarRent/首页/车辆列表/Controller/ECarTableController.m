@@ -22,6 +22,7 @@
 @property (nonatomic, strong) MBProgressHUD * hud;
 @property (nonatomic, strong) ITTSegement *segment;
 @property (nonatomic, assign) NSInteger page;
+@property (nonatomic, strong) NSArray *btnList;
 
 @end
 
@@ -32,6 +33,7 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     UILabel * titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
     titleLabel.text = @"车辆列表";
+    self.btnList = [[NSArray alloc] initWithObjects:@"distance", @"Mileage", @"duration", nil];
     titleLabel.textColor = [UIColor blackColor];
     titleLabel.font = [UIFont boldSystemFontOfSize:17.f];
     titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -83,13 +85,18 @@
 - (void)headerRereshing
 {
     _page = 0;
-    [self getDataFromSer:@"1" type:@"distance"];
+    if (self.segment.selectedIndex > 2) {
+        [self.tableView headerEndRefreshing];
+        [self.tableView footerEndRefreshing];
+        return;
+    }
+    [self getDataFromSer:[NSString stringWithFormat:@"%d", _segment.currentState] type:self.btnList[self.segment.selectedIndex]];
 }
 
 - (void)footerRereshing
 {
     _page ++;
-    [self getDataFromSer:@"1" type:@"distance"];
+    [self getDataFromSer:[NSString stringWithFormat:@"%d", _segment.currentState] type:self.btnList[self.segment.selectedIndex]];
 }
 
 - (void)goBack
@@ -102,13 +109,7 @@
 
 -(void)sgAction:(ITTSegement *)sg
 {
-    NSArray * array = [self sortedArrayWithIndex:sg.selectedIndex];
-    if (!array) {
-        return;
-    }
-    [_dataList removeAllObjects];
-    [_dataList addObjectsFromArray:array];
-    [_tableView reloadData];
+    [_tableView headerBeginRefreshing];
 }
 
 - (NSArray *)sortedArrayWithIndex:(NSInteger)index
@@ -168,16 +169,12 @@
     [self showHUD:@"正在加载"];
     [[_CYJmanager carTableListUserCoordinate:user.userCoordinate order:order type:type states:str andPage:[NSString stringWithFormat:@"%zd", _page]] subscribeNext:^(id x) {
         [self hideHUD];
-        if (_page == 0) {
-            [_dataList removeAllObjects];
-        }
-        [_dataList addObjectsFromArray:x];
-        NSArray * array = [weakSelf sortedArrayWithIndex:_segment.selectedIndex];
-        if (!array) {
-            return ;
+        NSArray *xarr = x;
+        if (xarr.count == 0) {
+            return;
         }
         [_dataList removeAllObjects];
-        [_dataList addObjectsFromArray:array];
+        [_dataList addObjectsFromArray:x];
         [_tableView reloadData];
     } completed:^{
         [weakSelf.tableView headerEndRefreshing];

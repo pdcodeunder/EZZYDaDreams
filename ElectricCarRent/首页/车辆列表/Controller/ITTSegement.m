@@ -109,8 +109,10 @@
     CGPoint point = [touch locationInView:self];
     float width=70;
     int index = point.x/width;
+    if (index > 2) {
+        return;
+    }
     self.selectedIndex = index;
-    
     [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
